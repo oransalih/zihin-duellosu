@@ -1,0 +1,348 @@
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  TextInput,
+  Share,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Strings } from '../constants/strings';
+import { useSocket } from '../hooks/useSocket';
+import { useGameEvents } from '../hooks/useGame';
+import { useMatchmaking } from '../hooks/useMatchmaking';
+import { useGameStore } from '../store/game-store';
+
+export function StartScreen() {
+  useSocket();
+  useGameEvents();
+
+  const connected = useGameStore((s) => s.connected);
+  const { matchmakingStatus, roomCode, joinQueue, leaveQueue, createRoom, joinRoom } = useMatchmaking();
+  const [joinCode, setJoinCode] = useState('');
+  const [showJoinInput, setShowJoinInput] = useState(false);
+
+  const handleQuickMatch = () => {
+    if (matchmakingStatus === 'queuing') {
+      leaveQueue();
+    } else {
+      joinQueue();
+    }
+  };
+
+  const handleCreateRoom = () => {
+    createRoom();
+  };
+
+  const handleShareRoom = async () => {
+    if (roomCode) {
+      try {
+        await Share.share({
+          message: `Zihin Duellosu'na katil! Oda kodu: ${roomCode}`,
+        });
+      } catch {}
+    }
+  };
+
+  const handleJoinRoom = () => {
+    if (joinCode.length === 6) {
+      joinRoom(joinCode);
+      setShowJoinInput(false);
+      setJoinCode('');
+    }
+  };
+
+  const isWaiting = matchmakingStatus === 'queuing' || matchmakingStatus === 'waiting_for_opponent';
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        {/* Connection Status */}
+        <View style={styles.connRow}>
+          <View style={[styles.connDot, connected ? styles.connOn : styles.connOff]} />
+          <Text style={styles.connText}>{connected ? 'Bagli' : 'Baglaniyor...'}</Text>
+        </View>
+
+        {/* Title */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{Strings.appTitle}</Text>
+          <View style={styles.subtitleLine} />
+          <Text style={styles.subtitle}>{Strings.appSubtitle}</Text>
+        </View>
+
+        {/* Main Card */}
+        <View style={styles.card}>
+          {/* Quick Match */}
+          <Pressable
+            style={[styles.btn, styles.btnPrimary, isWaiting && styles.btnActive]}
+            onPress={handleQuickMatch}
+            disabled={matchmakingStatus === 'waiting_for_opponent'}
+          >
+            {matchmakingStatus === 'queuing' ? (
+              <View style={styles.btnRow}>
+                <ActivityIndicator color={Colors.textBright} size="small" />
+                <Text style={styles.btnPrimaryText}>{Strings.startScreen.waiting}</Text>
+              </View>
+            ) : (
+              <Text style={styles.btnPrimaryText}>{Strings.startScreen.play}</Text>
+            )}
+          </Pressable>
+
+          <Text style={styles.description}>{Strings.startScreen.description}</Text>
+
+          <View style={styles.divider} />
+
+          {/* Room Code Display or Create */}
+          {roomCode ? (
+            <View style={styles.roomCodeBox}>
+              <Text style={styles.roomLabel}>Oda Kodu:</Text>
+              <Text style={styles.roomCode}>{roomCode}</Text>
+              <Pressable style={[styles.btn, styles.btnSecondary]} onPress={handleShareRoom}>
+                <Text style={styles.btnSecondaryText}>PAYLAS</Text>
+              </Pressable>
+              {matchmakingStatus === 'waiting_for_opponent' && (
+                <View style={styles.waitRow}>
+                  <ActivityIndicator color={Colors.primaryLight} size="small" />
+                  <Text style={styles.waitText}>Rakip bekleniyor...</Text>
+                </View>
+              )}
+            </View>
+          ) : (
+            <Pressable
+              style={[styles.btn, styles.btnSecondary]}
+              onPress={handleCreateRoom}
+              disabled={isWaiting}
+            >
+              <Text style={styles.btnSecondaryText}>{Strings.startScreen.inviteLink}</Text>
+            </Pressable>
+          )}
+
+          {/* Join Room */}
+          {showJoinInput ? (
+            <View style={styles.joinRow}>
+              <TextInput
+                style={styles.joinInput}
+                value={joinCode}
+                onChangeText={(t) => setJoinCode(t.toUpperCase())}
+                placeholder="ABCDEF"
+                placeholderTextColor={Colors.textMuted}
+                maxLength={6}
+                autoCapitalize="characters"
+                autoFocus
+              />
+              <Pressable
+                style={[styles.joinBtn, joinCode.length !== 6 && styles.btnDisabled]}
+                onPress={handleJoinRoom}
+                disabled={joinCode.length !== 6}
+              >
+                <Text style={styles.joinBtnText}>{'>'}</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <Pressable
+              style={[styles.btn, styles.btnOutline]}
+              onPress={() => setShowJoinInput(true)}
+              disabled={isWaiting}
+            >
+              <Text style={styles.btnOutlineText}>{Strings.startScreen.joinRoom}</Text>
+            </Pressable>
+          )}
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: Spacing.lg,
+  },
+  connRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    position: 'absolute',
+    top: 60,
+    left: 0,
+    right: 0,
+  },
+  connDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  connOn: { backgroundColor: Colors.primaryLight },
+  connOff: { backgroundColor: Colors.error },
+  connText: {
+    fontSize: FontSize.xs,
+    color: Colors.textMuted,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: Spacing.xl,
+  },
+  title: {
+    fontSize: FontSize.hero,
+    fontWeight: '900',
+    color: Colors.textBright,
+    textAlign: 'center',
+    lineHeight: 50,
+    letterSpacing: 3,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  subtitleLine: {
+    width: 60,
+    height: 2,
+    backgroundColor: Colors.primary,
+    marginVertical: Spacing.sm,
+  },
+  subtitle: {
+    fontSize: FontSize.lg,
+    fontWeight: '700',
+    color: Colors.textGreen,
+    letterSpacing: 4,
+  },
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+    padding: Spacing.lg,
+    gap: Spacing.md,
+  },
+  btn: {
+    paddingVertical: 14,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  btnPrimary: {
+    backgroundColor: Colors.primary,
+    borderWidth: 1,
+    borderColor: Colors.primaryLight,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  btnActive: {
+    backgroundColor: Colors.primaryDark,
+    borderColor: Colors.primary,
+  },
+  btnPrimaryText: {
+    fontSize: FontSize.lg,
+    fontWeight: '800',
+    color: Colors.textBright,
+    letterSpacing: 2,
+  },
+  btnSecondary: {
+    backgroundColor: Colors.surfaceLight,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+  },
+  btnSecondaryText: {
+    fontSize: FontSize.md,
+    fontWeight: '700',
+    color: Colors.text,
+    letterSpacing: 1,
+  },
+  btnOutline: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  btnOutlineText: {
+    fontSize: FontSize.md,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+    letterSpacing: 1,
+  },
+  btnDisabled: {
+    opacity: 0.3,
+  },
+  description: {
+    fontSize: FontSize.sm,
+    color: Colors.textMuted,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: Colors.surfaceBorder,
+  },
+  roomCodeBox: {
+    alignItems: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.surfaceLight,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+  },
+  roomLabel: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+  },
+  roomCode: {
+    fontSize: FontSize.xxl,
+    fontWeight: '900',
+    color: Colors.textGreen,
+    letterSpacing: 8,
+  },
+  waitRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  waitText: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+  },
+  joinRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
+  joinInput: {
+    flex: 1,
+    backgroundColor: Colors.surfaceLight,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+    paddingHorizontal: Spacing.md,
+    fontSize: FontSize.lg,
+    color: Colors.textBright,
+    fontWeight: '800',
+    letterSpacing: 6,
+    textAlign: 'center',
+    height: 50,
+  },
+  joinBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  joinBtnText: {
+    fontSize: FontSize.xl,
+    fontWeight: '900',
+    color: Colors.textBright,
+  },
+});
