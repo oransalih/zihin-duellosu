@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(npm install:*)",
+      "Bash(source:*)",
+      "Bash(nvm list:*)",
+      "Bash(nvm use:*)",
+      "Bash(npx localtunnel:*)",
+      "Bash(npx expo start:*)",
+      "Bash(ipconfig:*)",
+      "Bash(ipconfig getifaddr:*)",
+      "Bash(curl:*)"
+    ]
+  }
+}

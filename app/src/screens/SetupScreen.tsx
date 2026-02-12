@@ -43,47 +43,53 @@ export function SetupScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.title}>{Strings.setupScreen.title}</Text>
-          <Text style={styles.subtitle}>{Strings.setupScreen.subtitle}</Text>
+        <View style={styles.card}>
+          <View style={styles.header}>
+            <Text style={styles.title}>{Strings.setupScreen.title}</Text>
+            <Text style={styles.subtitle}>{Strings.setupScreen.subtitle}</Text>
+          </View>
+
+          {mySecretSubmitted ? (
+            <View style={styles.waitingContainer}>
+              <View style={styles.checkmark}>
+                <Text style={styles.checkmarkText}>OK</Text>
+              </View>
+              <Text style={styles.secretConfirmed}>{Strings.setupScreen.secretSaved}</Text>
+
+              <View style={styles.statusRow}>
+                {opponentReady ? (
+                  <>
+                    <View style={[styles.statusDot, styles.statusDotReady]} />
+                    <Text style={styles.statusReady}>{Strings.setupScreen.opponentReady}</Text>
+                  </>
+                ) : (
+                  <>
+                    <ActivityIndicator color={Colors.primaryLight} size="small" />
+                    <Text style={styles.statusWaiting}>{Strings.setupScreen.waiting}</Text>
+                  </>
+                )}
+              </View>
+            </View>
+          ) : (
+            <View style={styles.inputSection}>
+              <DigitInput masked onComplete={handleComplete} onClear={handleClear} />
+
+              {error && <Text style={styles.error}>{error}</Text>}
+
+              <Pressable
+                style={({ pressed }) => [
+                  styles.confirmButton,
+                  !secret && styles.confirmButtonDisabled,
+                  pressed && secret ? styles.btnPressed : null,
+                ]}
+                onPress={handleConfirm}
+                disabled={!secret}
+              >
+                <Text style={styles.confirmButtonText}>{Strings.setupScreen.confirm}</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
-
-        {mySecretSubmitted ? (
-          <View style={styles.waitingContainer}>
-            <View style={styles.checkmark}>
-              <Text style={styles.checkmarkText}>OK</Text>
-            </View>
-            <Text style={styles.secretConfirmed}>Sayin kaydedildi</Text>
-
-            <View style={styles.statusRow}>
-              {opponentReady ? (
-                <>
-                  <View style={[styles.statusDot, styles.statusDotReady]} />
-                  <Text style={styles.statusReady}>{Strings.setupScreen.opponentReady}</Text>
-                </>
-              ) : (
-                <>
-                  <ActivityIndicator color={Colors.primary} size="small" />
-                  <Text style={styles.statusWaiting}>{Strings.setupScreen.waiting}</Text>
-                </>
-              )}
-            </View>
-          </View>
-        ) : (
-          <View style={styles.inputSection}>
-            <DigitInput masked onComplete={handleComplete} onClear={handleClear} />
-
-            {error && <Text style={styles.error}>{error}</Text>}
-
-            <Pressable
-              style={[styles.confirmButton, !secret && styles.confirmButtonDisabled]}
-              onPress={handleConfirm}
-              disabled={!secret}
-            >
-              <Text style={styles.confirmButtonText}>{Strings.setupScreen.confirm}</Text>
-            </Pressable>
-          </View>
-        )}
       </View>
     </SafeAreaView>
   );
@@ -97,21 +103,31 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: Spacing.xl,
+    paddingHorizontal: Spacing.lg,
+  },
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+    padding: Spacing.lg,
+    gap: Spacing.lg,
   },
   header: {
     alignItems: 'center',
-    marginBottom: Spacing.xxl,
+    gap: Spacing.xs,
   },
   title: {
-    fontSize: FontSize.xl,
-    fontWeight: '700',
-    color: Colors.text,
+    fontSize: FontSize.xxl,
+    fontWeight: '800',
+    color: Colors.textBright,
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: FontSize.md,
     color: Colors.textSecondary,
-    marginTop: Spacing.xs,
   },
   inputSection: {
     alignItems: 'center',
@@ -124,36 +140,53 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     backgroundColor: Colors.primary,
-    paddingVertical: Spacing.md,
+    paddingVertical: 14,
     paddingHorizontal: Spacing.xxl,
-    borderRadius: BorderRadius.lg,
+    borderRadius: BorderRadius.md,
     minWidth: 200,
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: Colors.primaryLight,
+    borderBottomWidth: 3,
+    borderBottomColor: Colors.primaryDark,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
   },
   confirmButtonDisabled: {
     opacity: 0.4,
   },
   confirmButtonText: {
     fontSize: FontSize.lg,
-    fontWeight: '700',
-    color: Colors.background,
+    fontWeight: '800',
+    color: Colors.textBright,
+    letterSpacing: 2,
+  },
+  btnPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   waitingContainer: {
     alignItems: 'center',
     gap: Spacing.md,
+    paddingVertical: Spacing.lg,
   },
   checkmark: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(0, 212, 170, 0.2)',
+    backgroundColor: Colors.primaryGlow,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: Colors.primary,
   },
   checkmarkText: {
     fontSize: FontSize.xl,
     fontWeight: '900',
-    color: Colors.primary,
+    color: Colors.primaryLight,
   },
   secretConfirmed: {
     fontSize: FontSize.lg,
@@ -164,7 +197,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    marginTop: Spacing.md,
+    marginTop: Spacing.sm,
   },
   statusDot: {
     width: 10,
@@ -172,11 +205,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   statusDotReady: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.primaryLight,
   },
   statusReady: {
     fontSize: FontSize.md,
-    color: Colors.success,
+    color: Colors.primaryLight,
     fontWeight: '600',
   },
   statusWaiting: {

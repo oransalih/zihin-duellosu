@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { View, TextInput, StyleSheet, Pressable } from 'react-native';
+import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
 import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
 
 interface DigitInputProps {
   masked?: boolean;
   disabled?: boolean;
+  compact?: boolean;
   onComplete: (value: string) => void;
   onClear?: () => void;
 }
 
-export function DigitInput({ masked = false, disabled = false, onComplete, onClear }: DigitInputProps) {
+export function DigitInput({ masked = false, disabled = false, compact = false, onComplete, onClear }: DigitInputProps) {
   const [digits, setDigits] = useState(['', '', '', '']);
   const refs = [
     useRef<TextInput>(null),
@@ -41,17 +42,20 @@ export function DigitInput({ masked = false, disabled = false, onComplete, onCle
     }
   };
 
+  const cellStyle = compact ? styles.cellCompact : styles.cell;
+  const inputStyle = compact ? styles.inputCompact : styles.input;
+
   return (
     <Pressable onPress={() => {
       const emptyIdx = digits.findIndex((d) => d === '');
       refs[emptyIdx >= 0 ? emptyIdx : 3].current?.focus();
     }}>
-      <View style={styles.container}>
+      <View style={[styles.container, compact && styles.containerCompact]}>
         {digits.map((digit, i) => (
-          <View key={i} style={[styles.cell, digit ? styles.cellFilled : null, disabled ? styles.cellDisabled : null]}>
+          <View key={i} style={[cellStyle, digit ? styles.cellFilled : null, disabled ? styles.cellDisabled : null]}>
             <TextInput
               ref={refs[i]}
-              style={styles.input}
+              style={inputStyle}
               value={masked && digit ? '\u2022' : digit}
               onChangeText={(text) => handleChange(text, i)}
               onKeyPress={(e) => handleKeyPress(e, i)}
@@ -74,10 +78,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.md,
   },
+  containerCompact: {
+    gap: Spacing.sm,
+  },
   cell: {
     width: 64,
     height: 76,
     borderRadius: BorderRadius.md,
+    borderWidth: 2,
+    borderColor: Colors.surfaceBorder,
+    backgroundColor: Colors.surfaceLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cellCompact: {
+    width: 48,
+    height: 52,
+    borderRadius: BorderRadius.sm,
     borderWidth: 2,
     borderColor: Colors.surfaceBorder,
     backgroundColor: Colors.surfaceLight,
@@ -100,6 +117,14 @@ const styles = StyleSheet.create({
     height: '100%',
     color: Colors.textBright,
     fontSize: FontSize.xxl,
+    textAlign: 'center',
+    fontWeight: '900',
+  },
+  inputCompact: {
+    width: '100%',
+    height: '100%',
+    color: Colors.textBright,
+    fontSize: FontSize.xl,
     textAlign: 'center',
     fontWeight: '900',
   },

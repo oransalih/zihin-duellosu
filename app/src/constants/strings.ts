@@ -4,9 +4,12 @@ export const Strings = {
   startScreen: {
     play: 'OYUNA BASLA',
     description: 'Rastgele bir rakip ile 4 haneli\ngizli sayisini bulma yarisi yaris...',
-    inviteLink: 'LINK ILE DAVET',
-    joinRoom: 'ODA KODUNU GIR',
+    inviteLink: 'ODA OLUSTUR',
+    joinRoom: 'ODAYA KATIL',
     waiting: 'Rakip araniyor...',
+    roomCode: 'Oda Kodu:',
+    share: 'PAYLAS',
+    waitingOpponent: 'Rakip bekleniyor...',
   },
   setupScreen: {
     title: 'Gizli Sayini Sec!',
@@ -14,6 +17,7 @@ export const Strings = {
     confirm: 'ONAYLA',
     waiting: 'Rakip secim yapiyor...',
     opponentReady: 'Rakip hazir!',
+    secretSaved: 'Sayin kaydedildi',
   },
   matchScreen: {
     title: 'Rakip Bulundu!',
@@ -32,6 +36,9 @@ export const Strings = {
     round: 'Tur',
     bullHint: 'Bull: dogru rakam\ndogru yer',
     cowHint: 'Cow: dogru rakam\nyanlis yer',
+    noGuess: 'Henuz tahmin yok',
+    yourGuesses: 'Senin Tahminlerin',
+    opponentGuesses: 'Rakibin Tahminleri',
   },
   resultScreen: {
     gameOver: 'OYUN BITTI!',
@@ -45,6 +52,8 @@ export const Strings = {
     newGame: 'YENI OYUN',
     home: 'Ana Sayfa',
     waitingRematch: 'Rakip bekleniyor...',
+    rematch: 'TEKRAR OYNA',
+    accept: 'KABUL ET',
   },
   errors: {
     disconnected: 'Rakip ayrildi',

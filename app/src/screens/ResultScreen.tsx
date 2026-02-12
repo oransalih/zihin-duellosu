@@ -43,39 +43,45 @@ export function ResultScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        {/* Result Icon & Text */}
-        <View style={styles.resultHeader}>
-          <View style={[styles.resultIcon, isWin ? styles.winIcon : isDraw ? styles.drawIcon : styles.loseIcon]}>
-            <Text style={styles.resultEmoji}>
-              {isWin ? 'W' : isDraw ? '=' : 'L'}
-            </Text>
-          </View>
-          <Text style={[styles.resultText, isWin ? styles.winText : isDraw ? styles.drawText : styles.loseText]}>
-            {isWin ? Strings.resultScreen.youWon : isDraw ? Strings.resultScreen.draw : Strings.resultScreen.youLost}
+        {/* Game Over Header */}
+        <Text style={styles.gameOverText}>{Strings.resultScreen.gameOver}</Text>
+
+        {/* Result */}
+        <Text style={[styles.resultText, isWin ? styles.winText : isDraw ? styles.drawText : styles.loseText]}>
+          {isWin ? Strings.resultScreen.youWon : isDraw ? Strings.resultScreen.draw : Strings.resultScreen.youLost}
+        </Text>
+
+        {/* Win info */}
+        {isWin && (
+          <Text style={styles.winInfo}>
+            {result.yourGuessCount} {Strings.resultScreen.movesWin}
           </Text>
+        )}
+
+        {/* Opponent Secret Card */}
+        <View style={styles.secretCard}>
+          <Text style={styles.secretLabel}>{Strings.resultScreen.opponentSecret}</Text>
+          <View style={styles.secretDigits}>
+            {result.opponentSecret.split('').map((d, i) => (
+              <View key={i} style={styles.secretDigitBox}>
+                <Text style={styles.secretDigit}>{d}</Text>
+              </View>
+            ))}
+          </View>
         </View>
 
         {/* Stats */}
         <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
+          <View style={styles.statRow}>
+            <Text style={styles.statLabel}>{Strings.resultScreen.yourMoves}</Text>
             <Text style={styles.statValue}>{result.yourGuessCount}</Text>
-            <Text style={styles.statLabel}>{Strings.resultScreen.guessCount}</Text>
           </View>
-
           <View style={styles.statDivider} />
-
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>{Strings.resultScreen.opponentSecret}</Text>
-            <View style={styles.secretDigits}>
-              {result.opponentSecret.split('').map((d, i) => (
-                <Text key={i} style={styles.secretDigit}>{d}</Text>
-              ))}
-            </View>
+          <View style={styles.statRow}>
+            <Text style={styles.statLabel}>{Strings.resultScreen.opponentMoves}</Text>
+            <Text style={styles.statValue}>{result.opponentGuessCount}</Text>
           </View>
         </View>
-
-        {/* Reason */}
-        <Text style={styles.reason}>{result.reason}</Text>
 
         {/* Buttons */}
         <View style={styles.buttons}>
@@ -83,22 +89,31 @@ export function ResultScreen() {
             <View style={styles.rematchWaiting}>
               {rematchRequestedBy === 'you' ? (
                 <>
-                  <ActivityIndicator color={Colors.primary} size="small" />
+                  <ActivityIndicator color={Colors.primaryLight} size="small" />
                   <Text style={styles.rematchWaitingText}>{Strings.resultScreen.waitingRematch}</Text>
                 </>
               ) : (
-                <Pressable style={[styles.button, styles.primaryButton]} onPress={handleRematch}>
-                  <Text style={styles.primaryButtonText}>Kabul Et</Text>
+                <Pressable
+                  style={({ pressed }) => [styles.button, styles.primaryButton, pressed && styles.btnPressed]}
+                  onPress={handleRematch}
+                >
+                  <Text style={styles.primaryButtonText}>{Strings.resultScreen.accept}</Text>
                 </Pressable>
               )}
             </View>
           ) : (
-            <Pressable style={[styles.button, styles.primaryButton]} onPress={handleRematch}>
-              <Text style={styles.primaryButtonText}>{Strings.resultScreen.rematch}</Text>
+            <Pressable
+              style={({ pressed }) => [styles.button, styles.primaryButton, pressed && styles.btnPressed]}
+              onPress={handleRematch}
+            >
+              <Text style={styles.primaryButtonText}>{Strings.resultScreen.newGame}</Text>
             </Pressable>
           )}
 
-          <Pressable style={[styles.button, styles.secondaryButton]} onPress={handleHome}>
+          <Pressable
+            style={({ pressed }) => [styles.button, styles.secondaryButton, pressed && styles.btnPressed]}
+            onPress={handleHome}
+          >
             <Text style={styles.secondaryButtonText}>{Strings.resultScreen.home}</Text>
           </Pressable>
         </View>
@@ -116,40 +131,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: Spacing.xl,
-    gap: Spacing.lg,
-  },
-  resultHeader: {
-    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
     gap: Spacing.md,
   },
-  resultIcon: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  winIcon: {
-    backgroundColor: 'rgba(0, 212, 170, 0.2)',
-  },
-  loseIcon: {
-    backgroundColor: 'rgba(255, 107, 107, 0.2)',
-  },
-  drawIcon: {
-    backgroundColor: 'rgba(255, 217, 61, 0.2)',
-  },
-  resultEmoji: {
-    fontSize: 40,
-    fontWeight: '900',
-    color: Colors.text,
+  gameOverText: {
+    fontSize: FontSize.xl,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+    letterSpacing: 2,
   },
   resultText: {
-    fontSize: FontSize.title,
+    fontSize: FontSize.hero,
     fontWeight: '900',
+    letterSpacing: 2,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowRadius: 6,
   },
   winText: {
-    color: Colors.primary,
+    color: Colors.textGreen,
   },
   loseText: {
     color: Colors.secondary,
@@ -157,65 +157,101 @@ const styles = StyleSheet.create({
   drawText: {
     color: Colors.bull,
   },
-  statsContainer: {
+  winInfo: {
+    fontSize: FontSize.lg,
+    color: Colors.textSecondary,
+    fontWeight: '600',
+  },
+  secretCard: {
     backgroundColor: Colors.surface,
     borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
     padding: Spacing.lg,
+    alignItems: 'center',
     width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
   },
-  statCard: {
-    flex: 1,
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  statDivider: {
-    width: 1,
-    height: 48,
-    backgroundColor: Colors.border,
-  },
-  statValue: {
-    fontSize: FontSize.title,
-    fontWeight: '900',
-    color: Colors.text,
-  },
-  statLabel: {
-    fontSize: FontSize.sm,
+  secretLabel: {
+    fontSize: FontSize.md,
     color: Colors.textSecondary,
+    fontWeight: '600',
   },
   secretDigits: {
     flexDirection: 'row',
-    gap: 6,
-    marginTop: Spacing.xs,
+    gap: Spacing.sm,
+  },
+  secretDigitBox: {
+    width: 52,
+    height: 60,
+    borderRadius: BorderRadius.md,
+    backgroundColor: Colors.surfaceLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.primaryLight,
   },
   secretDigit: {
-    fontSize: FontSize.xxl,
+    fontSize: FontSize.title,
     fontWeight: '900',
-    color: Colors.primary,
+    color: Colors.textGreen,
   },
-  reason: {
+  statsContainer: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+    padding: Spacing.md,
+    width: '100%',
+    gap: Spacing.sm,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: Spacing.xs,
+  },
+  statLabel: {
     fontSize: FontSize.md,
     color: Colors.textSecondary,
-    textAlign: 'center',
+  },
+  statValue: {
+    fontSize: FontSize.xl,
+    fontWeight: '900',
+    color: Colors.textBright,
+  },
+  statDivider: {
+    height: 1,
+    backgroundColor: Colors.surfaceBorder,
   },
   buttons: {
     width: '100%',
     gap: Spacing.md,
-    marginTop: Spacing.lg,
+    marginTop: Spacing.md,
   },
   button: {
-    paddingVertical: Spacing.md,
-    borderRadius: BorderRadius.lg,
+    paddingVertical: 14,
+    borderRadius: BorderRadius.md,
     alignItems: 'center',
   },
   primaryButton: {
     backgroundColor: Colors.primary,
+    borderWidth: 1.5,
+    borderColor: Colors.primaryLight,
+    borderBottomWidth: 3,
+    borderBottomColor: Colors.primaryDark,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
   },
   primaryButtonText: {
     fontSize: FontSize.lg,
-    fontWeight: '700',
-    color: Colors.background,
+    fontWeight: '800',
+    color: Colors.textBright,
+    letterSpacing: 2,
   },
   secondaryButton: {
     backgroundColor: Colors.surface,
@@ -226,6 +262,10 @@ const styles = StyleSheet.create({
     fontSize: FontSize.lg,
     fontWeight: '600',
     color: Colors.textSecondary,
+  },
+  btnPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   rematchWaiting: {
     flexDirection: 'row',

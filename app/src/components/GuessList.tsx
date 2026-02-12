@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { GuessRow } from './GuessRow';
-import { Colors, Spacing, FontSize } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
 import { GuessResult, OpponentGuessResult } from '@bull-cow/shared';
+import { Strings } from '../constants/strings';
 
 interface GuessListProps {
   title: string;
@@ -13,10 +14,17 @@ interface GuessListProps {
 export function GuessList({ title, guesses, showDigits }: GuessListProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>{title}</Text>
+        {guesses.length > 0 && (
+          <View style={styles.countBadge}>
+            <Text style={styles.countText}>{guesses.length}</Text>
+          </View>
+        )}
+      </View>
       <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
         {guesses.length === 0 ? (
-          <Text style={styles.empty}>Henuz tahmin yok</Text>
+          <Text style={styles.empty}>{Strings.gameScreen.noGuess}</Text>
         ) : (
           guesses.map((g, i) => (
             <View key={i} style={styles.row}>
@@ -39,19 +47,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
   title: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
-    fontWeight: '600',
+    fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1,
-    marginBottom: Spacing.sm,
+  },
+  countBadge: {
+    backgroundColor: Colors.surfaceLight,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  countText: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    fontWeight: '700',
   },
   list: {
     flex: 1,
   },
   row: {
-    marginBottom: Spacing.xs,
+    marginBottom: 6,
   },
   empty: {
     fontSize: FontSize.sm,

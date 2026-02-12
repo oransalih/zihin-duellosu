@@ -77,7 +77,12 @@ export function StartScreen() {
         <View style={styles.card}>
           {/* Quick Match */}
           <Pressable
-            style={[styles.btn, styles.btnPrimary, isWaiting && styles.btnActive]}
+            style={({ pressed }) => [
+              styles.btn,
+              styles.btnPrimary,
+              isWaiting && styles.btnActive,
+              pressed && styles.btnPressed,
+            ]}
             onPress={handleQuickMatch}
             disabled={matchmakingStatus === 'waiting_for_opponent'}
           >
@@ -98,21 +103,29 @@ export function StartScreen() {
           {/* Room Code Display or Create */}
           {roomCode ? (
             <View style={styles.roomCodeBox}>
-              <Text style={styles.roomLabel}>Oda Kodu:</Text>
+              <Text style={styles.roomLabel}>{Strings.startScreen.roomCode}</Text>
               <Text style={styles.roomCode}>{roomCode}</Text>
-              <Pressable style={[styles.btn, styles.btnSecondary]} onPress={handleShareRoom}>
-                <Text style={styles.btnSecondaryText}>PAYLAS</Text>
+              <Pressable
+                style={({ pressed }) => [styles.btn, styles.btnSecondary, pressed && styles.btnPressed]}
+                onPress={handleShareRoom}
+              >
+                <Text style={styles.btnSecondaryText}>{Strings.startScreen.share}</Text>
               </Pressable>
               {matchmakingStatus === 'waiting_for_opponent' && (
                 <View style={styles.waitRow}>
                   <ActivityIndicator color={Colors.primaryLight} size="small" />
-                  <Text style={styles.waitText}>Rakip bekleniyor...</Text>
+                  <Text style={styles.waitText}>{Strings.startScreen.waitingOpponent}</Text>
                 </View>
               )}
             </View>
           ) : (
             <Pressable
-              style={[styles.btn, styles.btnSecondary]}
+              style={({ pressed }) => [
+                styles.btn,
+                styles.btnSecondary,
+                pressed && styles.btnPressed,
+                isWaiting && styles.btnDisabled,
+              ]}
               onPress={handleCreateRoom}
               disabled={isWaiting}
             >
@@ -143,7 +156,12 @@ export function StartScreen() {
             </View>
           ) : (
             <Pressable
-              style={[styles.btn, styles.btnOutline]}
+              style={({ pressed }) => [
+                styles.btn,
+                styles.btnOutline,
+                pressed && styles.btnPressed,
+                isWaiting && styles.btnDisabled,
+              ]}
               onPress={() => setShowJoinInput(true)}
               disabled={isWaiting}
             >
@@ -172,7 +190,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 6,
     position: 'absolute',
-    top: 60,
+    top: 16,
     left: 0,
     right: 0,
   },
@@ -198,15 +216,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 50,
     letterSpacing: 3,
-    textShadowColor: 'rgba(0,0,0,0.5)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    textShadowColor: 'rgba(0,0,0,0.6)',
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowRadius: 6,
   },
   subtitleLine: {
-    width: 60,
+    width: 80,
     height: 2,
     backgroundColor: Colors.primary,
-    marginVertical: Spacing.sm,
+    marginVertical: Spacing.sm + 2,
   },
   subtitle: {
     fontSize: FontSize.lg,
@@ -235,10 +253,12 @@ const styles = StyleSheet.create({
   },
   btnPrimary: {
     backgroundColor: Colors.primary,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: Colors.primaryLight,
+    borderBottomWidth: 3,
+    borderBottomColor: Colors.primaryDark,
     shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
     elevation: 6,
@@ -246,6 +266,10 @@ const styles = StyleSheet.create({
   btnActive: {
     backgroundColor: Colors.primaryDark,
     borderColor: Colors.primary,
+  },
+  btnPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   btnPrimaryText: {
     fontSize: FontSize.lg,
@@ -291,9 +315,11 @@ const styles = StyleSheet.create({
   roomCodeBox: {
     alignItems: 'center',
     gap: Spacing.sm,
-    backgroundColor: Colors.surfaceLight,
+    backgroundColor: Colors.cardBg,
     borderRadius: BorderRadius.md,
     padding: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
   },
   roomLabel: {
     fontSize: FontSize.sm,
@@ -339,6 +365,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.primaryLight,
   },
   joinBtnText: {
     fontSize: FontSize.xl,

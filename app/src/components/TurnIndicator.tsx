@@ -12,10 +12,10 @@ export function TurnIndicator({ isMyTurn, round }: TurnIndicatorProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (isMyTurn) {
+    if (!isMyTurn) {
       Animated.loop(
         Animated.sequence([
-          Animated.timing(pulseAnim, { toValue: 0.6, duration: 800, useNativeDriver: true }),
+          Animated.timing(pulseAnim, { toValue: 0.5, duration: 800, useNativeDriver: true }),
           Animated.timing(pulseAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
         ])
       ).start();
@@ -26,34 +26,36 @@ export function TurnIndicator({ isMyTurn, round }: TurnIndicatorProps) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.round}>{Strings.gameScreen.round} {round}</Text>
-      <Animated.View
-        style={[
-          styles.indicator,
-          isMyTurn ? styles.myTurn : styles.opponentTurn,
-          !isMyTurn && { opacity: pulseAnim },
-        ]}
-      >
-        <View style={[styles.dot, isMyTurn ? styles.dotActive : styles.dotWaiting]} />
-        <Text style={[styles.text, isMyTurn ? styles.textActive : styles.textWaiting]}>
-          {isMyTurn ? Strings.gameScreen.yourTurn : Strings.gameScreen.opponentTurn}
-        </Text>
-      </Animated.View>
+      <View style={styles.row}>
+        <Animated.View
+          style={[
+            styles.indicator,
+            isMyTurn ? styles.myTurnBg : styles.opponentTurnBg,
+            !isMyTurn && { opacity: pulseAnim },
+          ]}
+        >
+          <View style={[styles.dot, isMyTurn ? styles.dotActive : styles.dotWaiting]} />
+          <Text style={[styles.turnText, isMyTurn ? styles.turnTextActive : styles.turnTextWaiting]}>
+            {isMyTurn ? Strings.gameScreen.yourTurn : Strings.gameScreen.opponentTurn}
+          </Text>
+        </Animated.View>
+
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusText}>{Strings.gameScreen.active}</Text>
+        </View>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    gap: Spacing.xs,
+    paddingVertical: Spacing.sm,
   },
-  round: {
-    fontSize: FontSize.xs,
-    color: Colors.textMuted,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   indicator: {
     flexDirection: 'row',
@@ -63,10 +65,10 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.full,
     gap: Spacing.sm,
   },
-  myTurn: {
-    backgroundColor: 'rgba(0, 212, 170, 0.15)',
+  myTurnBg: {
+    backgroundColor: Colors.primaryGlow,
   },
-  opponentTurn: {
+  opponentTurnBg: {
     backgroundColor: 'rgba(136, 136, 170, 0.15)',
   },
   dot: {
@@ -75,19 +77,30 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   dotActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.primaryLight,
   },
   dotWaiting: {
     backgroundColor: Colors.textSecondary,
   },
-  text: {
+  turnText: {
     fontSize: FontSize.md,
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  textActive: {
-    color: Colors.primary,
+  turnTextActive: {
+    color: Colors.textGreen,
   },
-  textWaiting: {
+  turnTextWaiting: {
     color: Colors.textSecondary,
+  },
+  statusBadge: {
+    backgroundColor: Colors.surfaceLight,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+  },
+  statusText: {
+    fontSize: FontSize.xs,
+    color: Colors.textSecondary,
+    fontWeight: '600',
   },
 });

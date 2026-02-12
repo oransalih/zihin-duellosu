@@ -49,22 +49,25 @@ export function GameScreen() {
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        {/* Turn Indicator */}
+        {/* Header */}
         <TurnIndicator isMyTurn={isMyTurn} round={round} />
 
-        {/* Guess Lists */}
-        <View style={styles.listsContainer}>
-          <GuessList
-            title={Strings.gameScreen.yourGuesses}
-            guesses={myGuesses}
-            showDigits={true}
-          />
-          <View style={styles.divider} />
-          <GuessList
-            title={Strings.gameScreen.opponentGuesses}
-            guesses={opponentResults}
-            showDigits={false}
-          />
+        {/* Guess List - Full Width Single Column */}
+        <View style={styles.listSection}>
+          <Text style={styles.sectionTitle}>{Strings.gameScreen.moves}</Text>
+          <View style={styles.listsContainer}>
+            <GuessList
+              title={Strings.gameScreen.yourGuesses}
+              guesses={myGuesses}
+              showDigits={true}
+            />
+            <View style={styles.listDivider} />
+            <GuessList
+              title={Strings.gameScreen.opponentGuesses}
+              guesses={opponentResults}
+              showDigits={false}
+            />
+          </View>
         </View>
 
         {/* Input Area */}
@@ -72,26 +75,33 @@ export function GameScreen() {
           {error && <Text style={styles.error}>{error}</Text>}
 
           <View style={styles.inputRow}>
-            <View style={styles.inputWrapper}>
-              <DigitInput
-                key={inputKey}
-                disabled={!isMyTurn}
-                onComplete={handleComplete}
-                onClear={handleClear}
-              />
-            </View>
+            <Text style={styles.inputLabel}>{Strings.gameScreen.yourGuess}</Text>
+            <DigitInput
+              key={inputKey}
+              compact
+              disabled={!isMyTurn}
+              onComplete={handleComplete}
+              onClear={handleClear}
+            />
           </View>
 
           <Pressable
-            style={[
+            style={({ pressed }) => [
               styles.sendButton,
               (!isMyTurn || !guess) && styles.sendButtonDisabled,
+              pressed && isMyTurn && guess ? styles.btnPressed : null,
             ]}
             onPress={handleSend}
             disabled={!isMyTurn || !guess}
           >
             <Text style={styles.sendButtonText}>{Strings.gameScreen.send}</Text>
           </Pressable>
+
+          {/* Bull/Cow Legend */}
+          <View style={styles.legend}>
+            <Text style={styles.legendBull}>B: dogru rakam, dogru yer</Text>
+            <Text style={styles.legendCow}>C: dogru rakam, yanlis yer</Text>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -106,15 +116,24 @@ const styles = StyleSheet.create({
   keyboardView: {
     flex: 1,
     paddingHorizontal: Spacing.md,
-    paddingTop: Spacing.md,
+    paddingTop: Spacing.sm,
+  },
+  listSection: {
+    flex: 1,
+    marginTop: Spacing.sm,
+  },
+  sectionTitle: {
+    fontSize: FontSize.md,
+    fontWeight: '700',
+    color: Colors.textBright,
+    marginBottom: Spacing.sm,
   },
   listsContainer: {
     flex: 1,
     flexDirection: 'row',
-    marginTop: Spacing.md,
     gap: Spacing.sm,
   },
-  divider: {
+  listDivider: {
     width: 1,
     backgroundColor: Colors.border,
   },
@@ -122,14 +141,18 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     gap: Spacing.sm,
     alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: Colors.surfaceBorder,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
   },
-  inputWrapper: {
-    flex: 1,
+  inputLabel: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    fontWeight: '600',
   },
   error: {
     fontSize: FontSize.sm,
@@ -138,18 +161,46 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     backgroundColor: Colors.primary,
-    paddingVertical: Spacing.sm + 2,
-    paddingHorizontal: Spacing.xxl,
-    borderRadius: BorderRadius.lg,
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.xl,
+    borderRadius: BorderRadius.md,
     alignItems: 'center',
-    minWidth: 160,
+    minWidth: 200,
+    borderWidth: 1.5,
+    borderColor: Colors.primaryLight,
+    borderBottomWidth: 3,
+    borderBottomColor: Colors.primaryDark,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
   },
   sendButtonDisabled: {
     opacity: 0.3,
   },
   sendButtonText: {
-    fontSize: FontSize.lg,
-    fontWeight: '700',
-    color: Colors.background,
+    fontSize: FontSize.md,
+    fontWeight: '800',
+    color: Colors.textBright,
+    letterSpacing: 1,
+  },
+  btnPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
+  legend: {
+    flexDirection: 'row',
+    gap: Spacing.lg,
+  },
+  legendBull: {
+    fontSize: FontSize.xs,
+    color: Colors.bull,
+    fontWeight: '600',
+  },
+  legendCow: {
+    fontSize: FontSize.xs,
+    color: Colors.primaryLight,
+    fontWeight: '600',
   },
 });

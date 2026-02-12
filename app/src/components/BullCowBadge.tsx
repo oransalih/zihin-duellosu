@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, FontSize, BorderRadius } from '../constants/theme';
 
 interface BullCowBadgeProps {
   bulls: number;
@@ -10,13 +10,13 @@ interface BullCowBadgeProps {
 export function BullCowBadge({ bulls, cows }: BullCowBadgeProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.badge}>
-        <Text style={styles.icon}>B</Text>
-        <Text style={[styles.count, styles.bullCount]}>{bulls}</Text>
+      <View style={[styles.badge, styles.bullBadge]}>
+        <Text style={styles.bullIcon}>B</Text>
+        <Text style={styles.bullCount}>{bulls}</Text>
       </View>
-      <View style={styles.badge}>
-        <Text style={styles.icon}>C</Text>
-        <Text style={[styles.count, styles.cowCount]}>{cows}</Text>
+      <View style={[styles.badge, styles.cowBadge]}>
+        <Text style={styles.cowIcon}>C</Text>
+        <Text style={styles.cowCount}>{cows}</Text>
       </View>
     </View>
   );
@@ -25,30 +25,44 @@ export function BullCowBadge({ bulls, cows }: BullCowBadgeProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    gap: Spacing.sm,
+    alignItems: 'center',
+    gap: 6,
+    flexShrink: 0,
   },
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceLight,
     borderRadius: BorderRadius.sm,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: Spacing.xs,
-    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    gap: 3,
+    minWidth: 38,
+    justifyContent: 'center',
   },
-  icon: {
-    fontSize: FontSize.md,
-    fontWeight: '700',
-    color: Colors.textSecondary,
+  bullBadge: {
+    backgroundColor: Colors.bullBg,
   },
-  count: {
-    fontSize: FontSize.lg,
-    fontWeight: '700',
+  cowBadge: {
+    backgroundColor: Colors.cowBg,
+  },
+  bullIcon: {
+    fontSize: FontSize.sm,
+    fontWeight: '800',
+    color: Colors.bull,
+  },
+  cowIcon: {
+    fontSize: FontSize.sm,
+    fontWeight: '800',
+    color: Colors.primaryLight,
   },
   bullCount: {
+    fontSize: FontSize.md,
+    fontWeight: '800',
     color: Colors.bull,
   },
   cowCount: {
-    color: Colors.cow,
+    fontSize: FontSize.md,
+    fontWeight: '800',
+    color: Colors.primaryLight,
   },
 });

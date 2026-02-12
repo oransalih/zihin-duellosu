@@ -14,20 +14,26 @@ interface GuessRowProps {
 export function GuessRow({ index, guess, bulls, cows, isWin }: GuessRowProps) {
   return (
     <View style={[styles.container, isWin && styles.winContainer]}>
-      <Text style={styles.index}>{index}</Text>
-      {guess ? (
-        <View style={styles.digits}>
-          {guess.split('').map((d, i) => (
-            <Text key={i} style={styles.digit}>{d}</Text>
-          ))}
-        </View>
-      ) : (
-        <View style={styles.digits}>
-          {[0, 1, 2, 3].map((i) => (
-            <Text key={i} style={styles.hiddenDigit}>?</Text>
-          ))}
-        </View>
-      )}
+      <View style={styles.indexBadge}>
+        <Text style={styles.indexText}>{index}</Text>
+      </View>
+
+      <View style={styles.digitsContainer}>
+        {guess ? (
+          guess.split('').map((d, i) => (
+            <View key={i} style={styles.digitBox}>
+              <Text style={styles.digit}>{d}</Text>
+            </View>
+          ))
+        ) : (
+          [0, 1, 2, 3].map((i) => (
+            <View key={i} style={[styles.digitBox, styles.hiddenBox]}>
+              <Text style={styles.hiddenDigit}>?</Text>
+            </View>
+          ))
+        )}
+      </View>
+
       <BullCowBadge bulls={bulls} cows={cows} />
     </View>
   );
@@ -39,39 +45,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.surface,
     borderRadius: BorderRadius.md,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    gap: Spacing.md,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    gap: 8,
   },
   winContainer: {
     borderWidth: 1,
-    borderColor: Colors.primary,
-    backgroundColor: 'rgba(0, 212, 170, 0.1)',
+    borderColor: Colors.primaryLight,
+    backgroundColor: Colors.primaryGlow,
   },
-  index: {
-    fontSize: FontSize.sm,
+  indexBadge: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: Colors.surfaceLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  indexText: {
+    fontSize: FontSize.xs,
     color: Colors.textMuted,
-    width: 20,
-    textAlign: 'center',
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  digits: {
+  digitsContainer: {
     flexDirection: 'row',
     flex: 1,
-    gap: 6,
+    gap: 4,
+    justifyContent: 'center',
+  },
+  digitBox: {
+    width: 32,
+    height: 36,
+    borderRadius: BorderRadius.sm,
+    backgroundColor: Colors.surfaceLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  hiddenBox: {
+    backgroundColor: Colors.surfaceBorder,
   },
   digit: {
-    fontSize: FontSize.xl,
-    color: Colors.text,
-    fontWeight: '700',
-    width: 28,
-    textAlign: 'center',
+    fontSize: FontSize.lg,
+    color: Colors.textBright,
+    fontWeight: '800',
   },
   hiddenDigit: {
-    fontSize: FontSize.xl,
+    fontSize: FontSize.lg,
     color: Colors.textMuted,
     fontWeight: '700',
-    width: 28,
-    textAlign: 'center',
   },
 });

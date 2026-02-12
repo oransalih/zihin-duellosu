@@ -61,43 +61,59 @@ npm install -g localtunnel
 
 ## Calistirma
 
-Projeyi ayaga kaldirmak icin **3 terminal penceresi** acmaniz gerekiyor:
+### Hizli Baslangic (Tek Komut)
 
-### Terminal 1: Sunucuyu Baslatin
+Projeyi tek komutla ayaga kaldirmak icin:
+
+```bash
+./start.sh
+```
+
+Bu script otomatik olarak:
+1. Sunucuyu baslatir
+2. Tunnel acar
+3. `socket.ts` dosyasindaki URL'yi gunceller
+4. Expo'yu tunnel modunda baslatir
+
+QR kodu ekranda cikar. Telefonunuzdaki **Expo Go** ile tarayin.
+
+Durdurmak icin: `Ctrl+C`
+
+---
+
+### Manuel Calistirma (3 Terminal)
+
+Scripti kullanmak istemezseniz, 3 ayri terminal acin:
+
+**Terminal 1 - Sunucu:**
 
 ```bash
 cd server
 npm run dev
 ```
 
-Sunucu `http://localhost:3000` adresinde calisacaktir.
-
-### Terminal 2: Tunnel Acin
-
-Sunucu calisirken, baska bir terminalde tunnel acin:
+**Terminal 2 - Tunnel:**
 
 ```bash
-lt --port 3000
+npx localtunnel --port 3000
 ```
 
-Bu komut size bir URL verecektir (ornek: `https://brave-dogs-fly.loca.lt`). **Bu URL'yi kopyalayin.**
+Cikan URL'yi kopyalayin (ornek: `https://brave-dogs-fly.loca.lt`).
 
-### Terminal 3: Tunnel URL'sini Uygulamaya Tanitin ve Uygulamayi Baslatin
+**Terminal 3 - Uygulama:**
 
-`app/src/services/socket.ts` dosyasini acin ve `SERVER_URL` degerini tunnel'dan aldiginiz URL ile degistirin:
+`app/src/services/socket.ts` dosyasindaki `SERVER_URL` degerini tunnel URL'si ile degistirin:
 
 ```typescript
-const SERVER_URL = 'https://brave-dogs-fly.loca.lt'; // <-- Buraya kendi tunnel URL'nizi yazin
+const SERVER_URL = 'https://brave-dogs-fly.loca.lt'; // <-- kendi tunnel URL'niz
 ```
 
-Ardindan uygulamayi baslatin:
+Sonra:
 
 ```bash
 cd app
-npm start
+npx expo start --tunnel
 ```
-
-QR kodu cikar. Telefonunuzdaki **Expo Go** uygulamasiyla QR kodu tarayin.
 
 ### Oynamaya Baslayin!
 
@@ -106,7 +122,7 @@ QR kodu cikar. Telefonunuzdaki **Expo Go** uygulamasiyla QR kodu tarayin.
 3. Diger oyuncu **"Odaya Katil"** tiklasin ve kodu girsin
 4. Veya ikisi de **"Hizli Eslesme"** tiklasin
 
-> **Not:** Tunnel URL'si her yeni `lt` komutu calistirildiginda degisir. Her seferinde `socket.ts` dosyasindaki URL'yi guncellemeyi unutmayin.
+> **Not:** Tunnel URL'si her yeni `lt` komutu calistirildiginda degisir. `start.sh` kullaniyorsaniz otomatik guncellenir. Manuel calistiriyorsaniz `socket.ts` dosyasini guncellemeyi unutmayin.
 
 > **Not:** Tunnel sayfasinda "Reminder" uyarisi cikarsa, "Click to Continue" butonuna basip devam edin. Uygulama bu uyariyi otomatik olarak bypass eder (`bypass-tunnel-reminder` header'i ile).
 
