@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { validateGuess } from '@bull-cow/shared';
 import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
@@ -9,6 +9,9 @@ import { GuessList } from '../components/GuessList';
 import { TurnIndicator } from '../components/TurnIndicator';
 import { useGameActions } from '../hooks/useGame';
 import { useGameStore } from '../store/game-store';
+
+const bullIcon = require('../../assets/images/bull_icon.png');
+const cowIcon = require('../../assets/images/cow_icon.png');
 
 export function GameScreen() {
   const [guess, setGuess] = useState('');
@@ -99,8 +102,14 @@ export function GameScreen() {
 
           {/* Bull/Cow Legend */}
           <View style={styles.legend}>
-            <Text style={styles.legendBull}>B: dogru rakam, dogru yer</Text>
-            <Text style={styles.legendCow}>C: dogru rakam, yanlis yer</Text>
+            <View style={styles.legendItem}>
+              <Image source={bullIcon} style={styles.legendIcon} />
+              <Text style={styles.legendBull}>dogru rakam, dogru yer</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <Image source={cowIcon} style={styles.legendIcon} />
+              <Text style={styles.legendCow}>dogru rakam, yanlis yer</Text>
+            </View>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -192,6 +201,16 @@ const styles = StyleSheet.create({
   legend: {
     flexDirection: 'row',
     gap: Spacing.lg,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  legendIcon: {
+    width: 14,
+    height: 14,
+    resizeMode: 'contain',
   },
   legendBull: {
     fontSize: FontSize.xs,

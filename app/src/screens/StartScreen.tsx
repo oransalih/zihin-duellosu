@@ -16,13 +16,19 @@ import { useSocket } from '../hooks/useSocket';
 import { useGameEvents } from '../hooks/useGame';
 import { useMatchmaking } from '../hooks/useMatchmaking';
 import { useGameStore } from '../store/game-store';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/RootNavigator';
 
 const logoImg = require('../../assets/images/logo.png');
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function StartScreen() {
   useSocket();
   useGameEvents();
 
+  const navigation = useNavigation<Nav>();
   const connected = useGameStore((s) => s.connected);
   const { matchmakingStatus, roomCode, joinQueue, leaveQueue, createRoom, joinRoom } = useMatchmaking();
   const [joinCode, setJoinCode] = useState('');
@@ -173,6 +179,14 @@ export function StartScreen() {
             </Pressable>
           )}
         </View>
+
+        {/* Preview Mode */}
+        <Pressable
+          style={({ pressed }) => [styles.previewBtn, pressed && styles.btnPressed]}
+          onPress={() => navigation.navigate('Preview')}
+        >
+          <Text style={styles.previewBtnText}>Ekranlari Gez</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -382,5 +396,15 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xl,
     fontWeight: '900',
     color: Colors.textBright,
+  },
+  previewBtn: {
+    marginTop: Spacing.md,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  previewBtnText: {
+    fontSize: FontSize.sm,
+    color: Colors.textMuted,
+    fontWeight: '600',
   },
 });
