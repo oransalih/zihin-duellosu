@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { Colors, FontSize } from '../constants/theme';
+import { Colors, FontSize, ms } from '../constants/theme';
 
 const bullIcon = require('../../assets/images/bull_icon.png');
 const cowIcon = require('../../assets/images/cow_icon.png');
@@ -29,17 +29,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: ms(4),
     flexShrink: 0,
   },
   badge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 1,
+    gap: ms(1),
   },
   icon: {
-    width: 14,
-    height: 14,
+    width: ms(14),
+    height: ms(14),
     resizeMode: 'contain',
   },
   bullCount: {

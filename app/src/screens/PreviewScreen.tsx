@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGameStore } from '../store/game-store';
 
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     backgroundColor: Colors.surfaceLight,
-    paddingVertical: 14,
+    paddingVertical: ms(14),
     borderRadius: BorderRadius.md,
     alignItems: 'center',
     borderWidth: 1,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   backBtn: {
-    paddingVertical: 14,
+    paddingVertical: ms(14),
     borderRadius: BorderRadius.md,
     alignItems: 'center',
     borderWidth: 1,

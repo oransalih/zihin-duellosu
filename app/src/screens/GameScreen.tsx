@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { validateGuess } from '@bull-cow/shared';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
 import { DigitInput } from '../components/DigitInput';
 import { GuessList } from '../components/GuessList';
@@ -170,11 +170,11 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     backgroundColor: Colors.primary,
-    paddingVertical: 12,
+    paddingVertical: ms(12),
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.md,
     alignItems: 'center',
-    minWidth: 200,
+    minWidth: ms(200),
     borderWidth: 1.5,
     borderColor: Colors.primaryLight,
     borderBottomWidth: 3,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     fontWeight: '800',
     color: Colors.textBright,
-    letterSpacing: 1,
+    letterSpacing: ms(1),
   },
   btnPressed: {
     opacity: 0.8,
@@ -205,11 +205,11 @@ const styles = StyleSheet.create({
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: ms(4),
   },
   legendIcon: {
-    width: 14,
-    height: 14,
+    width: ms(14),
+    height: ms(14),
     resizeMode: 'contain',
   },
   legendBull: {

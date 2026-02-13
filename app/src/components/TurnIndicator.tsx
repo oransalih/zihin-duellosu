@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
 
 interface TurnIndicatorProps {
@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(136, 136, 170, 0.15)',
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: ms(8),
+    height: ms(8),
+    borderRadius: ms(4),
   },
   dotActive: {
     backgroundColor: Colors.primaryLight,
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
   },
   statusBadge: {
     backgroundColor: Colors.surfaceLight,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: ms(12),
+    paddingVertical: ms(6),
     borderRadius: BorderRadius.full,
   },
   statusText: {

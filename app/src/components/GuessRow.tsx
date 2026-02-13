@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, FontSize, BorderRadius, ms } from '../constants/theme';
 import { BullCowBadge } from './BullCowBadge';
 
 interface GuessRowProps {
@@ -29,9 +29,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.surface,
     borderRadius: BorderRadius.sm,
-    paddingHorizontal: 8,
-    paddingVertical: 7,
-    gap: 6,
+    paddingHorizontal: ms(8),
+    paddingVertical: ms(7),
+    gap: ms(6),
   },
   winContainer: {
     borderWidth: 1,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textMuted,
     fontWeight: '700',
-    width: 12,
+    width: ms(12),
     textAlign: 'center',
   },
   digits: {
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     color: Colors.textBright,
     fontWeight: '800',
     textAlign: 'center',
-    letterSpacing: 3,
+    letterSpacing: ms(3),
   },
   hiddenDigits: {
     color: Colors.textMuted,

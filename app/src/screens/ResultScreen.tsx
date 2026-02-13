@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
 import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGameActions } from '../hooks/useGame';
@@ -146,20 +146,20 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   resultIcon: {
-    width: 96,
-    height: 96,
+    width: ms(96),
+    height: ms(96),
     resizeMode: 'contain',
   },
   gameOverText: {
     fontSize: FontSize.xl,
     fontWeight: '700',
     color: Colors.textSecondary,
-    letterSpacing: 2,
+    letterSpacing: ms(2),
   },
   resultText: {
     fontSize: FontSize.hero,
     fontWeight: '900',
-    letterSpacing: 2,
+    letterSpacing: ms(2),
     textShadowColor: 'rgba(0,0,0,0.5)',
     textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 6,
@@ -199,8 +199,8 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   secretDigitBox: {
-    width: 52,
-    height: 60,
+    width: ms(52),
+    height: ms(60),
     borderRadius: BorderRadius.md,
     backgroundColor: Colors.surfaceLight,
     alignItems: 'center',
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
   },
   button: {
-    paddingVertical: 14,
+    paddingVertical: ms(14),
     borderRadius: BorderRadius.md,
     alignItems: 'center',
   },
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.lg,
     fontWeight: '800',
     color: Colors.textBright,
-    letterSpacing: 2,
+    letterSpacing: ms(2),
   },
   secondaryButton: {
     backgroundColor: Colors.surface,

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { View, TextInput, StyleSheet, Pressable, Text } from 'react-native';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 
 interface DigitInputProps {
   masked?: boolean;
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   cell: {
-    width: 64,
-    height: 76,
+    width: ms(64),
+    height: ms(76),
     borderRadius: BorderRadius.md,
     borderWidth: 2,
     borderColor: Colors.surfaceBorder,
@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cellCompact: {
-    width: 48,
-    height: 52,
+    width: ms(48),
+    height: ms(52),
     borderRadius: BorderRadius.sm,
     borderWidth: 2,
     borderColor: Colors.surfaceBorder,

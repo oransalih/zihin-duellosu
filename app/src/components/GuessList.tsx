@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { GuessRow } from './GuessRow';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { GuessResult, OpponentGuessResult } from '@bull-cow/shared';
 import { Strings } from '../constants/strings';
 
@@ -58,13 +58,13 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontWeight: '700',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: ms(1),
   },
   countBadge: {
     backgroundColor: Colors.surfaceLight,
     borderRadius: BorderRadius.full,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: ms(8),
+    paddingVertical: ms(2),
   },
   countText: {
     fontSize: FontSize.xs,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   row: {
-    marginBottom: 6,
+    marginBottom: ms(6),
   },
   empty: {
     fontSize: FontSize.sm,

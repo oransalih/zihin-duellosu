@@ -1,3 +1,10 @@
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters';
+
+// Re-export helpers for use in individual files
+export const ms = (size: number, factor = 0.3) => moderateScale(size, factor);
+export const s = scale;
+export const vs = verticalScale;
+
 export const Colors = {
   background: '#1A1D2A',
   surface: '#242838',
@@ -25,29 +32,29 @@ export const Colors = {
 };
 
 export const Spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
+  xs: moderateScale(4, 0.3),
+  sm: moderateScale(8, 0.3),
+  md: moderateScale(16, 0.3),
+  lg: moderateScale(24, 0.3),
+  xl: moderateScale(32, 0.3),
+  xxl: moderateScale(48, 0.3),
 };
 
 export const FontSize = {
-  xs: 11,
-  sm: 13,
-  md: 15,
-  lg: 18,
-  xl: 22,
-  xxl: 28,
-  title: 36,
-  hero: 44,
+  xs: moderateScale(11, 0.4),
+  sm: moderateScale(13, 0.4),
+  md: moderateScale(15, 0.4),
+  lg: moderateScale(18, 0.4),
+  xl: moderateScale(22, 0.4),
+  xxl: moderateScale(28, 0.4),
+  title: moderateScale(36, 0.4),
+  hero: moderateScale(44, 0.4),
 };
 
 export const BorderRadius = {
-  sm: 6,
-  md: 10,
-  lg: 14,
-  xl: 20,
+  sm: moderateScale(6, 0.3),
+  md: moderateScale(10, 0.3),
+  lg: moderateScale(14, 0.3),
+  xl: moderateScale(20, 0.3),
   full: 9999,
 };

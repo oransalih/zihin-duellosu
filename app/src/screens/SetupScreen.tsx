@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { validateSecret } from '@bull-cow/shared';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
 import { DigitInput } from '../components/DigitInput';
 import { useGameActions } from '../hooks/useGame';
@@ -140,10 +140,10 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     backgroundColor: Colors.primary,
-    paddingVertical: 14,
+    paddingVertical: ms(14),
     paddingHorizontal: Spacing.xxl,
     borderRadius: BorderRadius.md,
-    minWidth: 200,
+    minWidth: ms(200),
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: Colors.primaryLight,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.lg,
     fontWeight: '800',
     color: Colors.textBright,
-    letterSpacing: 2,
+    letterSpacing: ms(2),
   },
   btnPressed: {
     opacity: 0.8,
@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.lg,
   },
   checkmark: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: ms(64),
+    height: ms(64),
+    borderRadius: ms(32),
     backgroundColor: Colors.primaryGlow,
     alignItems: 'center',
     justifyContent: 'center',
@@ -200,9 +200,9 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   statusDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: ms(10),
+    height: ms(10),
+    borderRadius: ms(5),
   },
   statusDotReady: {
     backgroundColor: Colors.primaryLight,

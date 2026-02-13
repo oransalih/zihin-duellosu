@@ -10,7 +10,7 @@ import {
   Share,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors, Spacing, FontSize, BorderRadius } from '../constants/theme';
+import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
 import { useSocket } from '../hooks/useSocket';
 import { useGameEvents } from '../hooks/useGame';
@@ -206,16 +206,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: ms(6),
     position: 'absolute',
-    top: 16,
+    top: ms(16),
     left: 0,
     right: 0,
   },
   connDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
+    width: ms(6),
+    height: ms(6),
+    borderRadius: ms(3),
   },
   connOn: { backgroundColor: Colors.primaryLight },
   connOff: { backgroundColor: Colors.error },
@@ -228,8 +228,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: ms(120),
+    height: ms(120),
     resizeMode: 'contain',
     marginBottom: Spacing.md,
   },
@@ -238,23 +238,23 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: Colors.textBright,
     textAlign: 'center',
-    lineHeight: 50,
-    letterSpacing: 3,
+    lineHeight: ms(50),
+    letterSpacing: ms(3),
     textShadowColor: 'rgba(0,0,0,0.6)',
     textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 6,
   },
   subtitleLine: {
-    width: 80,
-    height: 2,
+    width: ms(80),
+    height: ms(2),
     backgroundColor: Colors.primary,
-    marginVertical: Spacing.sm + 2,
+    marginVertical: Spacing.sm + ms(2),
   },
   subtitle: {
     fontSize: FontSize.lg,
     fontWeight: '700',
     color: Colors.textGreen,
-    letterSpacing: 4,
+    letterSpacing: ms(4),
   },
   card: {
     backgroundColor: Colors.surface,
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   btn: {
-    paddingVertical: 14,
+    paddingVertical: ms(14),
     borderRadius: BorderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.lg,
     fontWeight: '800',
     color: Colors.textBright,
-    letterSpacing: 2,
+    letterSpacing: ms(2),
   },
   btnSecondary: {
     backgroundColor: Colors.surfaceLight,
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     fontWeight: '700',
     color: Colors.text,
-    letterSpacing: 1,
+    letterSpacing: ms(1),
   },
   btnOutline: {
     backgroundColor: 'transparent',
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.md,
     fontWeight: '600',
     color: Colors.textSecondary,
-    letterSpacing: 1,
+    letterSpacing: ms(1),
   },
   btnDisabled: {
     opacity: 0.3,
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.sm,
     color: Colors.textMuted,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: ms(20),
   },
   divider: {
     height: 1,
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xxl,
     fontWeight: '900',
     color: Colors.textGreen,
-    letterSpacing: 8,
+    letterSpacing: ms(8),
   },
   waitRow: {
     flexDirection: 'row',
@@ -378,13 +378,13 @@ const styles = StyleSheet.create({
     fontSize: FontSize.lg,
     color: Colors.textBright,
     fontWeight: '800',
-    letterSpacing: 6,
+    letterSpacing: ms(6),
     textAlign: 'center',
-    height: 50,
+    height: ms(50),
   },
   joinBtn: {
-    width: 50,
-    height: 50,
+    width: ms(50),
+    height: ms(50),
     borderRadius: BorderRadius.md,
     backgroundColor: Colors.primary,
     alignItems: 'center',
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   },
   previewBtn: {
     marginTop: Spacing.md,
-    paddingVertical: 10,
+    paddingVertical: ms(10),
     alignItems: 'center',
   },
   previewBtnText: {
