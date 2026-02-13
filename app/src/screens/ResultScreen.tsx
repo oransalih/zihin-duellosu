@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Pressable,
   ActivityIndicator,
@@ -15,6 +16,10 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGameActions } from '../hooks/useGame';
 import { useGameStore } from '../store/game-store';
 import { disconnectSocket } from '../services/socket';
+
+const trophyImg = require('../../assets/images/trophy.png');
+const defeatImg = require('../../assets/images/defeat.png');
+const drawImg = require('../../assets/images/draw.png');
 
 type ResultRouteProp = RouteProp<RootStackParamList, 'Result'>;
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -43,6 +48,12 @@ export function ResultScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
+        {/* Result Icon */}
+        <Image
+          source={isWin ? trophyImg : isDraw ? drawImg : defeatImg}
+          style={styles.resultIcon}
+        />
+
         {/* Game Over Header */}
         <Text style={styles.gameOverText}>{Strings.resultScreen.gameOver}</Text>
 
@@ -133,6 +144,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     gap: Spacing.md,
+  },
+  resultIcon: {
+    width: 96,
+    height: 96,
+    resizeMode: 'contain',
   },
   gameOverText: {
     fontSize: FontSize.xl,

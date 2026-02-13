@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 
 // @ts-ignore - __DEV__ is defined by React Native
-const SERVER_URL = 'https://orange-ants-tell.loca.lt';
+const SERVER_URL = 'https://zihin-duellosu.onrender.com';
 
 let socket: Socket | null = null;
 

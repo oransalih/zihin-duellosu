@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   Pressable,
   ActivityIndicator,
@@ -15,6 +16,8 @@ import { useSocket } from '../hooks/useSocket';
 import { useGameEvents } from '../hooks/useGame';
 import { useMatchmaking } from '../hooks/useMatchmaking';
 import { useGameStore } from '../store/game-store';
+
+const logoImg = require('../../assets/images/logo.png');
 
 export function StartScreen() {
   useSocket();
@@ -68,6 +71,7 @@ export function StartScreen() {
 
         {/* Title */}
         <View style={styles.titleContainer}>
+          <Image source={logoImg} style={styles.logo} />
           <Text style={styles.title}>{Strings.appTitle}</Text>
           <View style={styles.subtitleLine} />
           <Text style={styles.subtitle}>{Strings.appSubtitle}</Text>
@@ -208,6 +212,12 @@ const styles = StyleSheet.create({
   titleContainer: {
     alignItems: 'center',
     marginBottom: Spacing.xl,
+  },
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    marginBottom: Spacing.md,
   },
   title: {
     fontSize: FontSize.hero,

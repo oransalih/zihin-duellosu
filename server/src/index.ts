@@ -4,7 +4,12 @@ import { GameManager } from './game-manager';
 import { Matchmaker } from './matchmaker';
 import { createSocketHandler } from './socket-handler';
 
-const httpServer = http.createServer();
+const httpServer = http.createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok' }));
+  }
+});
 const io = new Server(httpServer, {
   cors: { origin: '*' },
 });
