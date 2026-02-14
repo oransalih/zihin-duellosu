@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     gap: ms(1),
   },
   icon: {
-    width: ms(14),
-    height: ms(14),
+    width: ms(20),
+    height: ms(20),
     resizeMode: 'contain',
   },
   bullCount: {

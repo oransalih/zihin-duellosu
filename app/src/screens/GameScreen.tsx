@@ -208,8 +208,8 @@ const styles = StyleSheet.create({
     gap: ms(4),
   },
   legendIcon: {
-    width: ms(14),
-    height: ms(14),
+    width: ms(35),
+    height: ms(35),
     resizeMode: 'contain',
   },
   legendBull: {
