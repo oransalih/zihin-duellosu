@@ -17,7 +17,7 @@ export function GuessRow({ index, guess, bulls, cows, isWin }: GuessRowProps) {
   return (
     <View style={[styles.container, isWin && styles.winContainer]}>
       <Text style={styles.index}>{index}</Text>
-      <Text style={[styles.digits, !guess && styles.hiddenDigits]}>{digits}</Text>
+      <Text style={[styles.digits, !guess && styles.hiddenDigits]} numberOfLines={1} adjustsFontSizeToFit>{digits}</Text>
       <BullCowBadge bulls={bulls} cows={cows} />
     </View>
   );

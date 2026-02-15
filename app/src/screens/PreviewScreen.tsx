@@ -10,10 +10,10 @@ import { useGameStore } from '../store/game-store';
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 const MOCK_GUESSES = [
-  { guess: '1234', bulls: 1, cows: 2, round: 1 },
-  { guess: '5678', bulls: 0, cows: 1, round: 2 },
-  { guess: '1357', bulls: 2, cows: 1, round: 3 },
-  { guess: '1397', bulls: 3, cows: 0, round: 4 },
+  { guess: '7532', bulls: 0, cows: 2, round: 1 },
+  { guess: '2568', bulls: 0, cows: 2, round: 2 },
+  { guess: '6245', bulls: 2, cows: 1, round: 3 },
+  { guess: '0689', bulls: 3, cows: 0, round: 26 },
 ];
 
 const MOCK_OPPONENT = [
@@ -35,7 +35,7 @@ export function PreviewScreen() {
   const previewGame = () => {
     store.getState().reset();
     store.getState().setConnected(true);
-    store.getState().startGame(true, 5);
+    store.getState().startGame(true, 30);
     MOCK_GUESSES.forEach((g) => store.getState().addMyGuess(g));
     MOCK_OPPONENT.forEach((g) => store.getState().addOpponentResult(g));
     navigation.navigate('Game');
