@@ -5,6 +5,7 @@ export interface Player {
   socketId: string;
   secret: string | null;
   guesses: GuessResult[];
+  disconnectedAt: number | null;
 }
 
 export interface GameRoomData {

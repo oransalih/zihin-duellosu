@@ -14,14 +14,14 @@ import { GameRoomData, Player } from './types';
 export class GameRoom {
   data: GameRoomData;
 
-  constructor(creatorSocketId: string) {
+  constructor(playerId: string, socketId: string) {
     const code = crypto.randomBytes(3).toString('hex').toUpperCase();
     this.data = {
       id: crypto.randomUUID(),
       code,
       state: 'waiting_for_players',
       players: [
-        { id: creatorSocketId, socketId: creatorSocketId, secret: null, guesses: [] },
+        { id: playerId, socketId, secret: null, guesses: [], disconnectedAt: null },
         null,
       ],
       round: 1,
@@ -36,6 +36,12 @@ export class GameRoom {
   get code() { return this.data.code; }
   get state() { return this.data.state; }
 
+  private getSocketIdForPlayer(playerId: string): string | null {
+    const idx = this.getPlayerIndex(playerId);
+    if (idx === -1) return null;
+    return this.data.players[idx]!.socketId;
+  }
+
   getPlayerIndex(playerId: string): 0 | 1 | -1 {
     if (this.data.players[0]?.id === playerId) return 0;
     if (this.data.players[1]?.id === playerId) return 1;
@@ -48,11 +54,11 @@ export class GameRoom {
     return (idx === 0 ? 1 : 0) as 0 | 1;
   }
 
-  addPlayer(io: Server, socketId: string): boolean {
+  addPlayer(io: Server, playerId: string, socketId: string): boolean {
     if (this.data.state !== 'waiting_for_players' || this.data.players[1] !== null) {
       return false;
     }
-    this.data.players[1] = { id: socketId, socketId, secret: null, guesses: [] };
+    this.data.players[1] = { id: playerId, socketId, secret: null, guesses: [], disconnectedAt: null };
     this.data.state = 'waiting_for_secrets';
 
     const p1 = this.data.players[0]!;
@@ -235,7 +241,10 @@ export class GameRoom {
     if (opIdx !== -1 && this.data.players[opIdx]) {
       io.to(this.data.players[opIdx]!.socketId).emit(S2C.REMATCH_PENDING, { requestedBy: 'opponent' });
     }
-    io.to(playerId).emit(S2C.REMATCH_PENDING, { requestedBy: 'you' });
+    const socketId = this.getSocketIdForPlayer(playerId);
+    if (socketId) {
+      io.to(socketId).emit(S2C.REMATCH_PENDING, { requestedBy: 'you' });
+    }
 
     // Check if both requested
     if (this.data.rematchRequests.size === 2) {
@@ -263,6 +272,58 @@ export class GameRoom {
     });
   }
 
+  // ── Reconnection Methods ──
+
+  markPlayerDisconnected(playerId: string): void {
+    const idx = this.getPlayerIndex(playerId);
+    if (idx === -1) return;
+    this.data.players[idx]!.disconnectedAt = Date.now();
+  }
+
+  notifyOpponentReconnecting(io: Server, playerId: string, timeoutSeconds: number): void {
+    const opIdx = this.getOpponentIndex(playerId);
+    if (opIdx !== -1 && this.data.players[opIdx]) {
+      io.to(this.data.players[opIdx]!.socketId).emit(S2C.OPPONENT_RECONNECTING, { timeoutSeconds });
+    }
+  }
+
+  reconnectPlayer(io: Server, playerId: string, newSocketId: string): void {
+    const idx = this.getPlayerIndex(playerId);
+    if (idx === -1) return;
+
+    this.data.players[idx]!.socketId = newSocketId;
+    this.data.players[idx]!.disconnectedAt = null;
+
+    // Notify opponent that they're back
+    const opIdx = this.getOpponentIndex(playerId);
+    if (opIdx !== -1 && this.data.players[opIdx]) {
+      io.to(this.data.players[opIdx]!.socketId).emit(S2C.OPPONENT_RECONNECTED, {});
+    }
+
+    // Replay game state to the reconnected player
+    const player = this.data.players[idx]!;
+    const opponent = this.data.players[idx === 0 ? 1 : 0]!;
+    const isMyTurn = this.data.currentTurn === idx;
+
+    // Re-emit GAME_START to put them back on GameScreen
+    io.to(newSocketId).emit(S2C.GAME_START, {
+      yourTurn: isMyTurn,
+      round: this.data.round,
+    });
+
+    // Re-send all their guess results
+    for (const g of player.guesses) {
+      io.to(newSocketId).emit(S2C.GUESS_RESULT, g);
+    }
+
+    // Re-send all opponent results (without guesses)
+    for (const g of opponent.guesses) {
+      io.to(newSocketId).emit(S2C.OPPONENT_GUESSED, {
+        bulls: g.bulls, cows: g.cows, round: g.round,
+      });
+    }
+  }
+
   handleDisconnect(io: Server, playerId: string): void {
     const opIdx = this.getOpponentIndex(playerId);
     if (opIdx !== -1 && this.data.players[opIdx]) {
@@ -274,6 +335,9 @@ export class GameRoom {
   }
 
   private emitError(io: Server, playerId: string, code: string, message: string): void {
-    io.to(playerId).emit(S2C.ERROR, { code, message });
+    const socketId = this.getSocketIdForPlayer(playerId);
+    if (socketId) {
+      io.to(socketId).emit(S2C.ERROR, { code, message });
+    }
   }
 }

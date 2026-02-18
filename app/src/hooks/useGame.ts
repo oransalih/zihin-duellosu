@@ -58,6 +58,14 @@ export function useGameEvents() {
       navigation.navigate('Result', { result: data });
     });
 
+    socket.on(S2C.OPPONENT_RECONNECTING, (data: { timeoutSeconds: number }) => {
+      useGameStore.getState().setOpponentReconnecting(true, data.timeoutSeconds);
+    });
+
+    socket.on(S2C.OPPONENT_RECONNECTED, () => {
+      useGameStore.getState().setOpponentReconnecting(false);
+    });
+
     socket.on(S2C.OPPONENT_DISCONNECTED, () => {
       const currentResult = store().result;
       if (!currentResult) {
@@ -95,6 +103,8 @@ export function useGameEvents() {
       socket.off(S2C.OPPONENT_GUESSED);
       socket.off(S2C.TURN_CHANGE);
       socket.off(S2C.GAME_OVER);
+      socket.off(S2C.OPPONENT_RECONNECTING);
+      socket.off(S2C.OPPONENT_RECONNECTED);
       socket.off(S2C.OPPONENT_DISCONNECTED);
       socket.off(S2C.REMATCH_PENDING);
       socket.off(S2C.ERROR);

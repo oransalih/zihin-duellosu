@@ -26,6 +26,10 @@ interface GameStore {
   // Result
   result: GameOverResult | null;
 
+  // Reconnection
+  opponentReconnecting: boolean;
+  reconnectCountdown: number | null;
+
   // Rematch
   rematchPending: boolean;
   rematchRequestedBy: 'you' | 'opponent' | null;
@@ -42,6 +46,7 @@ interface GameStore {
   addOpponentResult: (result: OpponentGuessResult) => void;
   setTurn: (yourTurn: boolean, round: number) => void;
   setGameOver: (result: GameOverResult) => void;
+  setOpponentReconnecting: (reconnecting: boolean, timeout?: number) => void;
   setRematchPending: (requestedBy: 'you' | 'opponent') => void;
   reset: () => void;
   resetForRematch: () => void;
@@ -60,6 +65,8 @@ const initialState = {
   myGuesses: [] as GuessResult[],
   opponentResults: [] as OpponentGuessResult[],
   result: null,
+  opponentReconnecting: false,
+  reconnectCountdown: null,
   rematchPending: false,
   rematchRequestedBy: null,
 };
@@ -95,6 +102,9 @@ export const useGameStore = create<GameStore>((set) => ({
 
   setGameOver: (result) =>
     set({ result, isPlaying: false }),
+
+  setOpponentReconnecting: (reconnecting, timeout) =>
+    set({ opponentReconnecting: reconnecting, reconnectCountdown: timeout ?? null }),
 
   setRematchPending: (requestedBy) =>
     set({ rematchPending: true, rematchRequestedBy: requestedBy }),

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { validateGuess } from '@bull-cow/shared';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
@@ -23,6 +23,22 @@ export function GameScreen() {
   const round = useGameStore((s) => s.round);
   const myGuesses = useGameStore((s) => s.myGuesses);
   const opponentResults = useGameStore((s) => s.opponentResults);
+  const opponentReconnecting = useGameStore((s) => s.opponentReconnecting);
+  const reconnectCountdown = useGameStore((s) => s.reconnectCountdown);
+
+  // Countdown timer for opponent reconnecting
+  const [countdown, setCountdown] = useState<number | null>(null);
+  useEffect(() => {
+    if (!opponentReconnecting || reconnectCountdown === null) {
+      setCountdown(null);
+      return;
+    }
+    setCountdown(reconnectCountdown);
+    const interval = setInterval(() => {
+      setCountdown((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [opponentReconnecting, reconnectCountdown]);
 
   const handleComplete = (value: string) => {
     setGuess(value);
@@ -50,7 +66,7 @@ export function GameScreen() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         {/* Header */}
         <TurnIndicator isMyTurn={isMyTurn} round={round} />
@@ -77,16 +93,14 @@ export function GameScreen() {
         <View style={styles.inputArea}>
           {error && <Text style={styles.error}>{error}</Text>}
 
-          <View style={styles.inputRow}>
-            <Text style={styles.inputLabel}>{Strings.gameScreen.yourGuess}</Text>
-            <DigitInput
-              key={inputKey}
-              compact
-              disabled={!isMyTurn}
-              onComplete={handleComplete}
-              onClear={handleClear}
-            />
-          </View>
+          <Text style={styles.inputLabel}>{Strings.gameScreen.yourGuess}</Text>
+          <DigitInput
+            key={inputKey}
+            compact
+            disabled={!isMyTurn}
+            onComplete={handleComplete}
+            onClear={handleClear}
+          />
 
           <Pressable
             style={({ pressed }) => [
@@ -113,6 +127,19 @@ export function GameScreen() {
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      {/* Opponent Reconnecting Overlay */}
+      {opponentReconnecting && (
+        <View style={styles.overlay}>
+          <View style={styles.overlayContent}>
+            <ActivityIndicator size="large" color={Colors.primaryLight} />
+            <Text style={styles.overlayTitle}>Rakip yeniden baglaniyor...</Text>
+            {countdown !== null && (
+              <Text style={styles.overlayCountdown}>{countdown} saniye</Text>
+            )}
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -152,11 +179,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: Colors.surfaceBorder,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
   },
   inputLabel: {
     fontSize: FontSize.sm,
@@ -221,5 +243,30 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.primaryLight,
     fontWeight: '600',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  overlayContent: {
+    backgroundColor: Colors.surface,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.xl,
+    alignItems: 'center',
+    gap: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.surfaceBorder,
+  },
+  overlayTitle: {
+    fontSize: FontSize.lg,
+    fontWeight: '700',
+    color: Colors.textBright,
+  },
+  overlayCountdown: {
+    fontSize: FontSize.xl,
+    fontWeight: '800',
+    color: Colors.primaryLight,
   },
 });

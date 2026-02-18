@@ -1,14 +1,27 @@
 import { Server } from 'socket.io';
 import { GameRoom } from './game-room';
 
+const GRACE_PERIOD_MS = 15_000;
+
 export class GameManager {
   private rooms = new Map<string, GameRoom>();
-  private playerToRoom = new Map<string, string>();
+  private playerToRoom = new Map<string, string>();       // playerId → roomId
+  private socketToPlayer = new Map<string, string>();     // socketId → playerId
+  private disconnectTimers = new Map<string, NodeJS.Timeout>(); // playerId → timer
 
-  createRoom(creatorSocketId: string): GameRoom {
-    const room = new GameRoom(creatorSocketId);
+  registerSocket(socketId: string, playerId: string): void {
+    this.socketToPlayer.set(socketId, playerId);
+  }
+
+  getPlayerIdForSocket(socketId: string): string | undefined {
+    return this.socketToPlayer.get(socketId);
+  }
+
+  createRoom(playerId: string, socketId: string): GameRoom {
+    const room = new GameRoom(playerId, socketId);
     this.rooms.set(room.id, room);
-    this.playerToRoom.set(creatorSocketId, room.id);
+    this.playerToRoom.set(playerId, room.id);
+    this.socketToPlayer.set(socketId, playerId);
     return room;
   }
 
@@ -19,13 +32,14 @@ export class GameManager {
     return undefined;
   }
 
-  joinRoom(io: Server, roomId: string, socketId: string): boolean {
+  joinRoom(io: Server, roomId: string, playerId: string, socketId: string): boolean {
     const room = this.rooms.get(roomId);
     if (!room) return false;
 
-    const joined = room.addPlayer(io, socketId);
+    const joined = room.addPlayer(io, playerId, socketId);
     if (joined) {
-      this.playerToRoom.set(socketId, roomId);
+      this.playerToRoom.set(playerId, roomId);
+      this.socketToPlayer.set(socketId, playerId);
     }
     return joined;
   }
@@ -54,13 +68,64 @@ export class GameManager {
     room.requestRematch(io, playerId);
   }
 
-  handleDisconnect(io: Server, playerId: string): void {
-    const room = this.getRoomForPlayer(playerId);
-    if (!room) return;
-    room.handleDisconnect(io, playerId);
-    this.playerToRoom.delete(playerId);
+  handleDisconnect(io: Server, socketId: string): void {
+    const playerId = this.socketToPlayer.get(socketId);
+    if (!playerId) return;
+    this.socketToPlayer.delete(socketId);
 
-    // Cleanup room if both players disconnected
+    const room = this.getRoomForPlayer(playerId);
+    if (!room) {
+      this.playerToRoom.delete(playerId);
+      return;
+    }
+
+    // Only use grace period during active game states
+    const activeStates = ['waiting_for_secrets', 'player_1_turn', 'player_2_turn'];
+    if (activeStates.includes(room.state)) {
+      room.markPlayerDisconnected(playerId);
+      room.notifyOpponentReconnecting(io, playerId, GRACE_PERIOD_MS / 1000);
+
+      const timer = setTimeout(() => {
+        this.disconnectTimers.delete(playerId);
+        room.handleDisconnect(io, playerId);
+        this.playerToRoom.delete(playerId);
+        this.cleanupRoomIfEmpty(room);
+      }, GRACE_PERIOD_MS);
+
+      this.disconnectTimers.set(playerId, timer);
+    } else {
+      // Not in active game, immediate cleanup
+      room.handleDisconnect(io, playerId);
+      this.playerToRoom.delete(playerId);
+      this.cleanupRoomIfEmpty(room);
+    }
+  }
+
+  handleReconnect(io: Server, playerId: string, newSocketId: string): boolean {
+    // Clear grace period timer if exists
+    const timer = this.disconnectTimers.get(playerId);
+    if (timer) {
+      clearTimeout(timer);
+      this.disconnectTimers.delete(playerId);
+    }
+
+    const room = this.getRoomForPlayer(playerId);
+    if (!room) return false;
+
+    // Check if this player is actually disconnected
+    const idx = room.getPlayerIndex(playerId);
+    if (idx === -1) return false;
+    if (!room.data.players[idx]!.disconnectedAt) return false;
+
+    // Update mappings
+    this.socketToPlayer.set(newSocketId, playerId);
+
+    // Reconnect in room
+    room.reconnectPlayer(io, playerId, newSocketId);
+    return true;
+  }
+
+  private cleanupRoomIfEmpty(room: GameRoom): void {
     const p0 = room.data.players[0];
     const p1 = room.data.players[1];
     const p0Connected = p0 ? this.playerToRoom.has(p0.id) : false;

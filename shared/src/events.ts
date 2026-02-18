@@ -12,6 +12,7 @@ export const C2S = {
   SECRET_SUBMIT: 'c2s:secret_submit',
   GUESS_SUBMIT: 'c2s:guess_submit',
   REMATCH_REQUEST: 'c2s:rematch_request',
+  RECONNECT: 'c2s:reconnect',
 } as const;
 
 export interface C2SPayloads {
@@ -22,6 +23,7 @@ export interface C2SPayloads {
   [C2S.SECRET_SUBMIT]: { secret: string };
   [C2S.GUESS_SUBMIT]: { guess: string };
   [C2S.REMATCH_REQUEST]: {};
+  [C2S.RECONNECT]: { playerId: string };
 }
 
 // ── Server to Client ──
@@ -37,6 +39,8 @@ export const S2C = {
   TURN_CHANGE: 's2c:turn_change',
   GAME_OVER: 's2c:game_over',
   OPPONENT_DISCONNECTED: 's2c:opponent_disconnected',
+  OPPONENT_RECONNECTING: 's2c:opponent_reconnecting',
+  OPPONENT_RECONNECTED: 's2c:opponent_reconnected',
   REMATCH_PENDING: 's2c:rematch_pending',
   ERROR: 's2c:error',
 } as const;
@@ -52,6 +56,8 @@ export interface S2CPayloads {
   [S2C.TURN_CHANGE]: { yourTurn: boolean; round: number };
   [S2C.GAME_OVER]: GameOverResult;
   [S2C.OPPONENT_DISCONNECTED]: { reason: string };
+  [S2C.OPPONENT_RECONNECTING]: { timeoutSeconds: number };
+  [S2C.OPPONENT_RECONNECTED]: {};
   [S2C.REMATCH_PENDING]: { requestedBy: 'you' | 'opponent' };
   [S2C.ERROR]: { code: string; message: string };
 }
