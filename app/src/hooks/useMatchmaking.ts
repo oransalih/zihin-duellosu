@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { getSocket } from '../services/socket';
-import { C2S } from '@bull-cow/shared';
+import { C2S } from '@zihin-duellosu/shared';
 import { useGameStore } from '../store/game-store';
 
 export function useMatchmaking() {

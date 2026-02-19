@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
 import { getSocket } from '../services/socket';
-import { S2C, C2S } from '@bull-cow/shared';
+import { S2C, C2S } from '@zihin-duellosu/shared';
 import { useGameStore } from '../store/game-store';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

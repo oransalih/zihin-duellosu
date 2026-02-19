@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { validateSecret } from '@bull-cow/shared';
+import { validateSecret } from '@zihin-duellosu/shared';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
 import { DigitInput } from '../components/DigitInput';

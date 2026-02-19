@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { S2C, ErrorCodes } from '@bull-cow/shared';
+import { S2C, ErrorCodes } from '@zihin-duellosu/shared';
 import { GameManager } from './game-manager';
 
 export class Matchmaker {

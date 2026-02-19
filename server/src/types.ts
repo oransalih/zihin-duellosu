@@ -1,4 +1,4 @@
-import { GuessResult, RoomState } from '@bull-cow/shared';
+import { GuessResult, RoomState } from '@zihin-duellosu/shared';
 
 export interface Player {
   id: string;

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { GuessRow } from './GuessRow';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
-import { GuessResult, OpponentGuessResult } from '@bull-cow/shared';
+import { GuessResult, OpponentGuessResult } from '@zihin-duellosu/shared';
 import { Strings } from '../constants/strings';
 
 interface GuessListProps {

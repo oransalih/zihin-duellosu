@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { C2S } from '@bull-cow/shared';
+import { C2S } from '@zihin-duellosu/shared';
 import { GameManager } from './game-manager';
 import { Matchmaker } from './matchmaker';
 

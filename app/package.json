@@ -1,5 +1,5 @@
 {
-  "name": "@bull-cow/app",
+  "name": "@zihin-duellosu/app",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@bull-cow/shared": "*",
+    "@zihin-duellosu/shared": "*",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/native-stack": "^7.0.0",
     "expo": "~54.0.33",

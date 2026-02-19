@@ -8,7 +8,7 @@ import {
   S2C,
   ErrorCodes,
   GuessResult,
-} from '@bull-cow/shared';
+} from '@zihin-duellosu/shared';
 import { GameRoomData, Player } from './types';
 
 export class GameRoom {

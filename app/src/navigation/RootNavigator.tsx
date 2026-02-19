@@ -6,7 +6,7 @@ import { GameScreen } from '../screens/GameScreen';
 import { ResultScreen } from '../screens/ResultScreen';
 import { PreviewScreen } from '../screens/PreviewScreen';
 import { Colors } from '../constants/theme';
-import { GameOverResult } from '@bull-cow/shared';
+import { GameOverResult } from '@zihin-duellosu/shared';
 
 export type RootStackParamList = {
   Start: undefined;

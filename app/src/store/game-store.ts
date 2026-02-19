@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GuessResult, OpponentGuessResult, GameOverResult } from '@bull-cow/shared';
+import { GuessResult, OpponentGuessResult, GameOverResult } from '@zihin-duellosu/shared';
 
 type MatchmakingStatus = 'idle' | 'queuing' | 'creating_room' | 'waiting_for_opponent' | 'matched';
 

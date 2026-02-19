@@ -1,5 +1,5 @@
 {
-  "name": "@bull-cow/server",
+  "name": "@zihin-duellosu/server",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,7 @@
     "start": "tsx src/index.ts"
   },
   "dependencies": {
-    "@bull-cow/shared": "*",
+    "@zihin-duellosu/shared": "*",
     "socket.io": "^4.7.0"
   },
   "devDependencies": {
