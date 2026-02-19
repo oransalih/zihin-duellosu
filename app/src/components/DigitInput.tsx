@@ -11,64 +11,84 @@ interface DigitInputProps {
 }
 
 export function DigitInput({ masked = false, disabled = false, compact = false, onComplete, onClear }: DigitInputProps) {
-  const [digits, setDigits] = useState(['', '', '', '']);
-  const refs = [
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
-  ];
+  const digitsRef = useRef(['', '', '', '']);
+  const cursorRef = useRef<number | null>(null);
+  const inputRef = useRef<TextInput>(null);
+  const [display, setDisplay] = useState(['', '', '', '']);
 
-  const handleChange = (text: string, index: number) => {
-    if (!/^\d?$/.test(text)) return;
-    const newDigits = [...digits];
-    newDigits[index] = text;
-    setDigits(newDigits);
-    if (text && index < 3) refs[index + 1].current?.focus();
-    if (newDigits.every((d) => d !== '')) {
-      onComplete(newDigits.join(''));
+  const sync = () => setDisplay([...digitsRef.current]);
+
+  const checkComplete = () => {
+    if (digitsRef.current.every((d) => d !== '')) {
+      onComplete(digitsRef.current.join(''));
     } else {
       onClear?.();
     }
   };
 
-  const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !digits[index] && index > 0) {
-      const newDigits = [...digits];
-      newDigits[index - 1] = '';
-      setDigits(newDigits);
-      refs[index - 1].current?.focus();
-      onClear?.();
+  const handleKeyPress = (e: any) => {
+    const key = e.nativeEvent.key;
+
+    if (/^\d$/.test(key)) {
+      // Find target: cursor position or first empty
+      const idx = cursorRef.current ?? digitsRef.current.findIndex((d) => d === '');
+      cursorRef.current = null;
+      if (idx < 0 || idx > 3) return;
+      digitsRef.current[idx] = key;
+      sync();
+      checkComplete();
+    } else if (key === 'Backspace') {
+      // Clear last filled digit
+      for (let i = 3; i >= 0; i--) {
+        if (digitsRef.current[i]) {
+          digitsRef.current[i] = '';
+          sync();
+          onClear?.();
+          break;
+        }
+      }
     }
   };
 
+  const handleBoxPress = (index: number) => {
+    if (disabled) return;
+    if (digitsRef.current[index]) {
+      // Clear this digit, set cursor here for next typed digit
+      digitsRef.current[index] = '';
+      cursorRef.current = index;
+      sync();
+      onClear?.();
+    }
+    inputRef.current?.focus();
+  };
+
   const cellStyle = compact ? styles.cellCompact : styles.cell;
-  const inputStyle = compact ? styles.inputCompact : styles.input;
+  const textStyle = compact ? styles.digitTextCompact : styles.digitText;
 
   return (
-    <Pressable onPress={() => {
-      const emptyIdx = digits.findIndex((d) => d === '');
-      refs[emptyIdx >= 0 ? emptyIdx : 3].current?.focus();
-    }}>
-      <View style={[styles.container, compact && styles.containerCompact]}>
-        {digits.map((digit, i) => (
-          <View key={i} style={[cellStyle, digit ? styles.cellFilled : null, disabled ? styles.cellDisabled : null]}>
-            <TextInput
-              ref={refs[i]}
-              style={inputStyle}
-              value={masked && digit ? '\u2022' : digit}
-              onChangeText={(text) => handleChange(text, i)}
-              onKeyPress={(e) => handleKeyPress(e, i)}
-              keyboardType="number-pad"
-              maxLength={1}
-              editable={!disabled}
-              selectTextOnFocus
-              caretHidden
-            />
-          </View>
-        ))}
-      </View>
-    </Pressable>
+    <View style={[styles.container, compact && styles.containerCompact]}>
+      {display.map((digit, i) => {
+        const filled = digit !== '';
+        return (
+          <Pressable key={i} onPress={() => handleBoxPress(i)}>
+            <View style={[cellStyle, filled && styles.cellFilled, disabled && styles.cellDisabled]}>
+              <Text style={textStyle}>
+                {filled ? (masked ? '\u2022' : digit) : ''}
+              </Text>
+            </View>
+          </Pressable>
+        );
+      })}
+      <TextInput
+        ref={inputRef}
+        style={styles.hiddenInput}
+        onKeyPress={handleKeyPress}
+        keyboardType="number-pad"
+        editable={!disabled}
+        caretHidden
+        autoCorrect={false}
+      />
+    </View>
   );
 }
 
@@ -112,20 +132,22 @@ const styles = StyleSheet.create({
   cellDisabled: {
     opacity: 0.4,
   },
-  input: {
-    width: '100%',
-    height: '100%',
+  digitText: {
     color: Colors.textBright,
     fontSize: FontSize.xxl,
-    textAlign: 'center',
     fontWeight: '900',
+    textAlign: 'center',
   },
-  inputCompact: {
-    width: '100%',
-    height: '100%',
+  digitTextCompact: {
     color: Colors.textBright,
     fontSize: FontSize.xl,
-    textAlign: 'center',
     fontWeight: '900',
+    textAlign: 'center',
+  },
+  hiddenInput: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    opacity: 0,
   },
 });

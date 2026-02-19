@@ -92,10 +92,16 @@ export const useGameStore = create<GameStore>((set) => ({
     }),
 
   addMyGuess: (result) =>
-    set((state) => ({ myGuesses: [...state.myGuesses, result] })),
+    set((state) => {
+      if (state.myGuesses.some((g) => g.round === result.round)) return state;
+      return { myGuesses: [...state.myGuesses, result] };
+    }),
 
   addOpponentResult: (result) =>
-    set((state) => ({ opponentResults: [...state.opponentResults, result] })),
+    set((state) => {
+      if (state.opponentResults.some((g) => g.round === result.round)) return state;
+      return { opponentResults: [...state.opponentResults, result] };
+    }),
 
   setTurn: (yourTurn, round) =>
     set({ isMyTurn: yourTurn, round }),
