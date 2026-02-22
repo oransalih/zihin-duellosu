@@ -2,10 +2,5 @@
   "ios": {
     "bundleIdentifier": "com.oransalih.zihinduellosu"
   },
-  "extra": {
-    "eas": {
-      "projectId": "cbe03192-57fa-4b10-8b38-cfbba93426fe"
-    }
-  },
   "owner": "oransalih"
 }

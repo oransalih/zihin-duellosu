@@ -115,7 +115,7 @@ export function useGameEvents() {
 export function useGameActions() {
   const submitSecret = useCallback((secret: string) => {
     getSocket().emit(C2S.SECRET_SUBMIT, { secret });
-    useGameStore.getState().setMySecretSubmitted(true);
+    useGameStore.getState().setMySecret(secret);
   }, []);
 
   const submitGuess = useCallback((guess: string) => {

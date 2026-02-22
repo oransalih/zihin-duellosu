@@ -13,6 +13,7 @@ interface GameStore {
   roomId: string | null;
 
   // Setup
+  mySecret: string | null;
   mySecretSubmitted: boolean;
   opponentReady: boolean;
 
@@ -39,7 +40,7 @@ interface GameStore {
   setMatchmakingStatus: (status: MatchmakingStatus) => void;
   setRoomCode: (code: string | null) => void;
   setRoomId: (id: string | null) => void;
-  setMySecretSubmitted: (submitted: boolean) => void;
+  setMySecret: (secret: string) => void;
   setOpponentReady: (ready: boolean) => void;
   startGame: (yourTurn: boolean, round: number) => void;
   addMyGuess: (result: GuessResult) => void;
@@ -57,6 +58,7 @@ const initialState = {
   matchmakingStatus: 'idle' as MatchmakingStatus,
   roomCode: null,
   roomId: null,
+  mySecret: null as string | null,
   mySecretSubmitted: false,
   opponentReady: false,
   isPlaying: false,
@@ -78,7 +80,7 @@ export const useGameStore = create<GameStore>((set) => ({
   setMatchmakingStatus: (matchmakingStatus) => set({ matchmakingStatus }),
   setRoomCode: (roomCode) => set({ roomCode }),
   setRoomId: (roomId) => set({ roomId }),
-  setMySecretSubmitted: (mySecretSubmitted) => set({ mySecretSubmitted }),
+  setMySecret: (secret) => set({ mySecret: secret, mySecretSubmitted: true }),
   setOpponentReady: (opponentReady) => set({ opponentReady }),
 
   startGame: (yourTurn, round) =>
@@ -119,6 +121,7 @@ export const useGameStore = create<GameStore>((set) => ({
 
   resetForRematch: () =>
     set({
+      mySecret: null,
       mySecretSubmitted: false,
       opponentReady: false,
       isPlaying: false,

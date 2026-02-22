@@ -10,7 +10,9 @@ import { TurnIndicator } from '../components/TurnIndicator';
 import { useGameActions } from '../hooks/useGame';
 import { useGameStore } from '../store/game-store';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const bullIcon = require('../../assets/images/bull_icon.png');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const cowIcon = require('../../assets/images/cow_icon.png');
 
 export function GameScreen() {
@@ -20,9 +22,9 @@ export function GameScreen() {
 
   const { submitGuess } = useGameActions();
   const isMyTurn = useGameStore((s) => s.isMyTurn);
-  const round = useGameStore((s) => s.round);
   const myGuesses = useGameStore((s) => s.myGuesses);
   const opponentResults = useGameStore((s) => s.opponentResults);
+  const mySecret = useGameStore((s) => s.mySecret);
   const opponentReconnecting = useGameStore((s) => s.opponentReconnecting);
   const reconnectCountdown = useGameStore((s) => s.reconnectCountdown);
 
@@ -69,20 +71,19 @@ export function GameScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         {/* Header */}
-        <TurnIndicator isMyTurn={isMyTurn} round={round} />
+        <TurnIndicator isMyTurn={isMyTurn} mySecret={mySecret} />
 
-        {/* Guess List - Full Width Single Column */}
+        {/* Guess Lists */}
         <View style={styles.listSection}>
-          <Text style={styles.sectionTitle}>{Strings.gameScreen.moves}</Text>
           <View style={styles.listsContainer}>
             <GuessList
-              title={Strings.gameScreen.yourGuesses}
+              title="Sen"
               guesses={myGuesses}
               showDigits={true}
             />
             <View style={styles.listDivider} />
             <GuessList
-              title={Strings.gameScreen.opponentGuesses}
+              title="Rakip"
               guesses={opponentResults}
               showDigits={false}
             />
@@ -156,13 +157,6 @@ const styles = StyleSheet.create({
   },
   listSection: {
     flex: 1,
-    marginTop: Spacing.sm,
-  },
-  sectionTitle: {
-    fontSize: FontSize.md,
-    fontWeight: '700',
-    color: Colors.textBright,
-    marginBottom: Spacing.sm,
   },
   listsContainer: {
     flex: 1,

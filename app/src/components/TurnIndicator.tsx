@@ -5,10 +5,10 @@ import { Strings } from '../constants/strings';
 
 interface TurnIndicatorProps {
   isMyTurn: boolean;
-  round: number;
+  mySecret?: string | null;
 }
 
-export function TurnIndicator({ isMyTurn, round }: TurnIndicatorProps) {
+export function TurnIndicator({ isMyTurn, mySecret }: TurnIndicatorProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -40,9 +40,16 @@ export function TurnIndicator({ isMyTurn, round }: TurnIndicatorProps) {
           </Text>
         </Animated.View>
 
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>{Strings.gameScreen.active}</Text>
-        </View>
+        {mySecret ? (
+          <View style={styles.secretBadge}>
+            <Text style={styles.secretLabel}>Sayın</Text>
+            <Text style={styles.secretValue}>{mySecret.split('').join(' ')}</Text>
+          </View>
+        ) : (
+          <View style={styles.statusBadge}>
+            <Text style={styles.statusText}>{Strings.gameScreen.active}</Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -69,7 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryGlow,
   },
   opponentTurnBg: {
-    backgroundColor: 'rgba(136, 136, 170, 0.15)',
+    backgroundColor: Colors.accentGlow,
   },
   dot: {
     width: ms(8),
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryLight,
   },
   dotWaiting: {
-    backgroundColor: Colors.textSecondary,
+    backgroundColor: Colors.accentLight,
   },
   turnText: {
     fontSize: FontSize.md,
@@ -90,7 +97,29 @@ const styles = StyleSheet.create({
     color: Colors.textGreen,
   },
   turnTextWaiting: {
-    color: Colors.textSecondary,
+    color: Colors.accentLight,
+  },
+  secretBadge: {
+    backgroundColor: Colors.surfaceLight,
+    paddingHorizontal: ms(12),
+    paddingVertical: ms(6),
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    alignItems: 'center',
+  },
+  secretLabel: {
+    fontSize: FontSize.xs,
+    color: Colors.textMuted,
+    fontWeight: '600',
+    lineHeight: ms(14),
+  },
+  secretValue: {
+    fontSize: FontSize.sm,
+    color: Colors.primaryLight,
+    fontWeight: '900',
+    letterSpacing: ms(3),
+    lineHeight: ms(16),
   },
   statusBadge: {
     backgroundColor: Colors.surfaceLight,
