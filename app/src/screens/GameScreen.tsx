@@ -27,6 +27,7 @@ export function GameScreen() {
   const mySecret = useGameStore((s) => s.mySecret);
   const opponentReconnecting = useGameStore((s) => s.opponentReconnecting);
   const reconnectCountdown = useGameStore((s) => s.reconnectCountdown);
+  const connected = useGameStore((s) => s.connected);
 
   // Countdown timer for opponent reconnecting
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -134,10 +135,21 @@ export function GameScreen() {
         <View style={styles.overlay}>
           <View style={styles.overlayContent}>
             <ActivityIndicator size="large" color={Colors.primaryLight} />
-            <Text style={styles.overlayTitle}>Rakip yeniden baglaniyor...</Text>
+            <Text style={styles.overlayTitle}>Rakibin bağlantı sorunu{'\n'}çözülmesi bekleniyor.</Text>
             {countdown !== null && (
               <Text style={styles.overlayCountdown}>{countdown} saniye</Text>
             )}
+          </View>
+        </View>
+      )}
+
+      {/* Self Disconnecting Overlay */}
+      {!connected && (
+        <View style={styles.overlay}>
+          <View style={[styles.overlayContent, styles.overlayContentWarning]}>
+            <ActivityIndicator size="large" color={Colors.accent} />
+            <Text style={styles.overlayTitle}>Bağlantı sorunu yaşıyorsun</Text>
+            <Text style={styles.overlaySubtitle}>Yeniden bağlanılıyor...</Text>
           </View>
         </View>
       )}
@@ -257,10 +269,19 @@ const styles = StyleSheet.create({
     fontSize: FontSize.lg,
     fontWeight: '700',
     color: Colors.textBright,
+    textAlign: 'center',
+  },
+  overlaySubtitle: {
+    fontSize: FontSize.sm,
+    color: Colors.textSecondary,
+    fontWeight: '500',
   },
   overlayCountdown: {
     fontSize: FontSize.xl,
     fontWeight: '800',
     color: Colors.primaryLight,
+  },
+  overlayContentWarning: {
+    borderColor: Colors.accent,
   },
 });

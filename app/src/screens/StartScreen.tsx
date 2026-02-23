@@ -8,6 +8,9 @@ import {
   ActivityIndicator,
   TextInput,
   Share,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
@@ -68,126 +71,135 @@ export function StartScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         {/* Connection Status */}
         <View style={styles.connRow}>
           <View style={[styles.connDot, connected ? styles.connOn : styles.connOff]} />
           <Text style={styles.connText}>{connected ? 'Bagli' : 'Baglaniyor...'}</Text>
         </View>
 
-        {/* Title */}
-        <View style={styles.titleContainer}>
-          <Image source={logoImg} style={styles.logo} />
-          <Text style={styles.title}>{Strings.appTitle}</Text>
-          <View style={styles.subtitleLine} />
-          <Text style={styles.subtitle}>{Strings.appSubtitle}</Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Title */}
+          <View style={styles.titleContainer}>
+            <Image source={logoImg} style={styles.logo} />
+            <Text style={styles.title}>{Strings.appTitle}</Text>
+            <View style={styles.subtitleLine} />
+            <Text style={styles.subtitle}>{Strings.appSubtitle}</Text>
+          </View>
 
-        {/* Main Card */}
-        <View style={styles.card}>
-          {/* Quick Match */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.btn,
-              styles.btnPrimary,
-              isWaiting && styles.btnActive,
-              pressed && styles.btnPressed,
-            ]}
-            onPress={handleQuickMatch}
-            disabled={matchmakingStatus === 'waiting_for_opponent'}
-          >
-            {matchmakingStatus === 'queuing' ? (
-              <View style={styles.btnRow}>
-                <ActivityIndicator color={Colors.textBright} size="small" />
-                <Text style={styles.btnPrimaryText}>{Strings.startScreen.waiting}</Text>
+          {/* Main Card */}
+          <View style={styles.card}>
+            {/* Quick Match */}
+            <Pressable
+              style={({ pressed }) => [
+                styles.btn,
+                styles.btnPrimary,
+                isWaiting && styles.btnActive,
+                pressed && styles.btnPressed,
+              ]}
+              onPress={handleQuickMatch}
+              disabled={matchmakingStatus === 'waiting_for_opponent'}
+            >
+              {matchmakingStatus === 'queuing' ? (
+                <View style={styles.btnRow}>
+                  <ActivityIndicator color={Colors.textBright} size="small" />
+                  <Text style={styles.btnPrimaryText}>{Strings.startScreen.waiting}</Text>
+                </View>
+              ) : (
+                <Text style={styles.btnPrimaryText}>{Strings.startScreen.play}</Text>
+              )}
+            </Pressable>
+
+            <Text style={styles.description}>{Strings.startScreen.description}</Text>
+
+            <View style={styles.divider} />
+
+            {/* Room Code Display or Create */}
+            {roomCode ? (
+              <View style={styles.roomCodeBox}>
+                <Text style={styles.roomLabel}>{Strings.startScreen.roomCode}</Text>
+                <Text style={styles.roomCode}>{roomCode}</Text>
+                <Pressable
+                  style={({ pressed }) => [styles.btn, styles.btnSecondary, pressed && styles.btnPressed]}
+                  onPress={handleShareRoom}
+                >
+                  <Text style={styles.btnSecondaryText}>{Strings.startScreen.share}</Text>
+                </Pressable>
+                {matchmakingStatus === 'waiting_for_opponent' && (
+                  <View style={styles.waitRow}>
+                    <ActivityIndicator color={Colors.primaryLight} size="small" />
+                    <Text style={styles.waitText}>{Strings.startScreen.waitingOpponent}</Text>
+                  </View>
+                )}
               </View>
             ) : (
-              <Text style={styles.btnPrimaryText}>{Strings.startScreen.play}</Text>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.btn,
+                  styles.btnSecondary,
+                  pressed && styles.btnPressed,
+                  isWaiting && styles.btnDisabled,
+                ]}
+                onPress={handleCreateRoom}
+                disabled={isWaiting}
+              >
+                <Text style={styles.btnSecondaryText}>{Strings.startScreen.inviteLink}</Text>
+              </Pressable>
             )}
+
+            {/* Join Room */}
+            {showJoinInput ? (
+              <View style={styles.joinRow}>
+                <TextInput
+                  style={styles.joinInput}
+                  value={joinCode}
+                  onChangeText={(t) => setJoinCode(t.toUpperCase())}
+                  placeholder="ABCDEF"
+                  placeholderTextColor={Colors.textMuted}
+                  maxLength={6}
+                  autoCapitalize="characters"
+                  autoFocus
+                />
+                <Pressable
+                  style={[styles.joinBtn, joinCode.length !== 6 && styles.btnDisabled]}
+                  onPress={handleJoinRoom}
+                  disabled={joinCode.length !== 6}
+                >
+                  <Text style={styles.joinBtnText}>{'>'}</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.btn,
+                  styles.btnOutline,
+                  pressed && styles.btnPressed,
+                  isWaiting && styles.btnDisabled,
+                ]}
+                onPress={() => setShowJoinInput(true)}
+                disabled={isWaiting}
+              >
+                <Text style={styles.btnOutlineText}>{Strings.startScreen.joinRoom}</Text>
+              </Pressable>
+            )}
+          </View>
+
+          {/* Preview Mode */}
+          <Pressable
+            style={({ pressed }) => [styles.previewBtn, pressed && styles.btnPressed]}
+            onPress={() => navigation.navigate('Preview')}
+          >
+            <Text style={styles.previewBtnText}>Ekranlari Gez</Text>
           </Pressable>
-
-          <Text style={styles.description}>{Strings.startScreen.description}</Text>
-
-          <View style={styles.divider} />
-
-          {/* Room Code Display or Create */}
-          {roomCode ? (
-            <View style={styles.roomCodeBox}>
-              <Text style={styles.roomLabel}>{Strings.startScreen.roomCode}</Text>
-              <Text style={styles.roomCode}>{roomCode}</Text>
-              <Pressable
-                style={({ pressed }) => [styles.btn, styles.btnSecondary, pressed && styles.btnPressed]}
-                onPress={handleShareRoom}
-              >
-                <Text style={styles.btnSecondaryText}>{Strings.startScreen.share}</Text>
-              </Pressable>
-              {matchmakingStatus === 'waiting_for_opponent' && (
-                <View style={styles.waitRow}>
-                  <ActivityIndicator color={Colors.primaryLight} size="small" />
-                  <Text style={styles.waitText}>{Strings.startScreen.waitingOpponent}</Text>
-                </View>
-              )}
-            </View>
-          ) : (
-            <Pressable
-              style={({ pressed }) => [
-                styles.btn,
-                styles.btnSecondary,
-                pressed && styles.btnPressed,
-                isWaiting && styles.btnDisabled,
-              ]}
-              onPress={handleCreateRoom}
-              disabled={isWaiting}
-            >
-              <Text style={styles.btnSecondaryText}>{Strings.startScreen.inviteLink}</Text>
-            </Pressable>
-          )}
-
-          {/* Join Room */}
-          {showJoinInput ? (
-            <View style={styles.joinRow}>
-              <TextInput
-                style={styles.joinInput}
-                value={joinCode}
-                onChangeText={(t) => setJoinCode(t.toUpperCase())}
-                placeholder="ABCDEF"
-                placeholderTextColor={Colors.textMuted}
-                maxLength={6}
-                autoCapitalize="characters"
-                autoFocus
-              />
-              <Pressable
-                style={[styles.joinBtn, joinCode.length !== 6 && styles.btnDisabled]}
-                onPress={handleJoinRoom}
-                disabled={joinCode.length !== 6}
-              >
-                <Text style={styles.joinBtnText}>{'>'}</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <Pressable
-              style={({ pressed }) => [
-                styles.btn,
-                styles.btnOutline,
-                pressed && styles.btnPressed,
-                isWaiting && styles.btnDisabled,
-              ]}
-              onPress={() => setShowJoinInput(true)}
-              disabled={isWaiting}
-            >
-              <Text style={styles.btnOutlineText}>{Strings.startScreen.joinRoom}</Text>
-            </Pressable>
-          )}
-        </View>
-
-        {/* Preview Mode */}
-        <Pressable
-          style={({ pressed }) => [styles.previewBtn, pressed && styles.btnPressed]}
-          onPress={() => navigation.navigate('Preview')}
-        >
-          <Text style={styles.previewBtnText}>Ekranlari Gez</Text>
-        </Pressable>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -197,10 +209,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  content: {
+  flex: {
     flex: 1,
+  },
+  content: {
+    flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.xl,
   },
   connRow: {
     flexDirection: 'row',
