@@ -4,13 +4,11 @@ import { StartScreen } from '../screens/StartScreen';
 import { SetupScreen } from '../screens/SetupScreen';
 import { GameScreen } from '../screens/GameScreen';
 import { ResultScreen } from '../screens/ResultScreen';
-import { PreviewScreen } from '../screens/PreviewScreen';
 import { Colors } from '../constants/theme';
 import { GameOverResult } from '@zihin-duellosu/shared';
 
 export type RootStackParamList = {
   Start: undefined;
-  Preview: undefined;
   Setup: { roomId: string };
   Game: undefined;
   Result: { result: GameOverResult };
@@ -29,7 +27,6 @@ export function RootNavigator() {
       }}
     >
       <Stack.Screen name="Start" component={StartScreen} />
-      <Stack.Screen name="Preview" component={PreviewScreen} />
       <Stack.Screen
         name="Setup"
         component={SetupScreen}
