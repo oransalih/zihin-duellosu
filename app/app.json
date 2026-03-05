@@ -33,14 +33,11 @@
     "runtimeVersion": {
       "policy": "appVersion"
     },
+    "owner": "sadalsuud",
     "extra": {
       "eas": {
-        "projectId": "e516436d-768e-444a-a4d5-ea10f8c23ef9"
+        "projectId": "66db5cac-21af-4172-8bdd-04e9a815c356"
       }
-    },
-    "owner": "sadalsuud",
-    "updates": {
-      "url": "https://u.expo.dev/e516436d-768e-444a-a4d5-ea10f8c23ef9"
     }
   }
 }

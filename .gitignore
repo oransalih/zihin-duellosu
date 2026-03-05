@@ -3,6 +3,7 @@ node_modules/
 
 # Expo
 .expo/
+.claude/
 dist/
 web-build/
 expo-env.d.ts
@@ -40,3 +41,4 @@ yarn-error.*
 *.p12
 *.key
 *.mobileprovision
+.gitignore
