@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.oransalih.app",
+      "bundleIdentifier": "com.sadalsuud.zihinduellosu",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -38,7 +38,7 @@
         "projectId": "e516436d-768e-444a-a4d5-ea10f8c23ef9"
       }
     },
-    "owner": "oransalih",
+    "owner": "sadalsuud",
     "updates": {
       "url": "https://u.expo.dev/e516436d-768e-444a-a4d5-ea10f8c23ef9"
     }
