@@ -1,6 +1,7 @@
 {
   "name": "zihin-duellosu",
   "private": true,
+  "main": "app/index.ts",
   "workspaces": [
     "shared",
     "server",
