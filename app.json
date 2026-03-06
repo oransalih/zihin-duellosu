@@ -1,8 +1,33 @@
-{ "expo": {
-   "version": "1.0.0",
-   "ios": {
-     "bundleIdentifier": "com.sadalsuud.zihinduellosu",
-     "buildNumber": "1"
-  },
-  "owner": "oransalih"
-} }
+{
+  "expo": {
+    "name": "Zihin Duellosu",
+    "slug": "zihin-duellosu",
+    "version": "1.0.0",
+    "scheme": "zihinduellosu",
+    "icon": "./app/assets/icon.png",
+    "splash": {
+      "image": "./app/assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a0a0f"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#0a0a0f"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.sadalsuud.zihinduellosu",
+      "buildNumber": "1",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "owner": "oransalih",
+    "extra": {
+      "eas": {
+        "projectId": "e516436d-768e-444a-a4d5-ea10f8c23ef9"
+      }
+    }
+  }
+}

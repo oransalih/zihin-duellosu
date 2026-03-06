@@ -23,9 +23,6 @@ export function getSocket(): Socket {
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
       auth: { playerId },
-      extraHeaders: {
-        'bypass-tunnel-reminder': 'true',
-      },
     });
   }
   return socket;
