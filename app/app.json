@@ -13,7 +13,7 @@
       "backgroundColor": "#1b1f28"
     },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.sadalsuud.zihinduellosu",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
