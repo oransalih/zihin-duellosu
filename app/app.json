@@ -30,12 +30,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "updates": {
-      "url": "https://u.expo.dev/66db5cac-21af-4172-8bdd-04e9a815c356"
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
     "owner": "sadalsuud",
     "extra": {
       "eas": {
