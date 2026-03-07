@@ -4,9 +4,31 @@ import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { Colors } from './src/constants/theme';
+import { View, Text } from 'react-native';
+
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { error: string | null }
+> {
+  state = { error: null };
+  componentDidCatch(e: Error) {
+    this.setState({ error: e.message + '\n' + e.stack });
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <View style={{ flex: 1, backgroundColor: '#000', padding: 20, justifyContent: 'center' }}>
+          <Text style={{ color: '#ff4444', fontSize: 12 }}>{this.state.error}</Text>
+        </View>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   return (
+    <ErrorBoundary>
     <SafeAreaProvider>
       <NavigationContainer
         theme={{
@@ -31,5 +53,6 @@ export default function App() {
         <StatusBar style="light" />
       </NavigationContainer>
     </SafeAreaProvider>
+    </ErrorBoundary>
   );
 }
