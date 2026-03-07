@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -16,6 +18,13 @@ import { RootStackParamList } from '../navigation/RootNavigator';
 import { useGameActions } from '../hooks/useGame';
 import { useGameStore } from '../store/game-store';
 import { disconnectSocket } from '../services/socket';
+
+const bannerAdUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : Platform.select({
+      ios: 'ca-app-pub-6498195844154887/8725394446',
+      android: 'ca-app-pub-6498195844154887/7366308215',
+    })!;
 
 const trophyImg = require('../../assets/images/trophy.png');
 const defeatImg = require('../../assets/images/defeat.png');
@@ -129,6 +138,11 @@ export function ResultScreen() {
           </Pressable>
         </View>
       </View>
+      <BannerAd
+        unitId={bannerAdUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+      />
     </SafeAreaView>
   );
 }

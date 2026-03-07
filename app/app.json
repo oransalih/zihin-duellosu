@@ -30,6 +30,15 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": [
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-6498195844154887~1906243766",
+          "iosAppId": "ca-app-pub-6498195844154887~4291325415"
+        }
+      ]
+    ],
     "owner": "oransalih",
     "extra": {
       "eas": {
