@@ -25,6 +25,6 @@ setInterval(() => {
 }, 60_000);
 
 const PORT = process.env.PORT || 3000;
-httpServer.listen(PORT, () => {
+httpServer.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Bull & Cow server running on port ${PORT}`);
 });
