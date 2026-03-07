@@ -30,10 +30,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "owner": "sadalsuud",
+    "owner": "oransalih",
     "extra": {
       "eas": {
-        "projectId": "66db5cac-21af-4172-8bdd-04e9a815c356"
+        "projectId": "e516436d-768e-444a-a4d5-ea10f8c23ef9"
       }
     }
   }
