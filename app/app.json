@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -38,6 +37,13 @@
         {
           "androidAppId": "ca-app-pub-6498195844154887~1906243766",
           "iosAppId": "ca-app-pub-6498195844154887~4291325415"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": { "newArchEnabled": false },
+          "android": { "newArchEnabled": true }
         }
       ]
     ],
