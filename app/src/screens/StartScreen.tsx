@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { Strings } from '../constants/strings';
@@ -20,6 +21,13 @@ import { useGameEvents } from '../hooks/useGame';
 import { useMatchmaking } from '../hooks/useMatchmaking';
 import { useGameStore } from '../store/game-store';
 const logoImg = require('../../assets/images/logo.png');
+
+const bannerAdUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : Platform.select({
+      ios: 'ca-app-pub-6498195844154887/8725394446',
+      android: 'ca-app-pub-6498195844154887/7366308215',
+    })!;
 
 export function StartScreen() {
   useSocket();
@@ -186,6 +194,11 @@ export function StartScreen() {
 
         </ScrollView>
       </KeyboardAvoidingView>
+      <BannerAd
+        unitId={bannerAdUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+      />
     </SafeAreaView>
   );
 }
