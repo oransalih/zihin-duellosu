@@ -34,6 +34,10 @@ interface GameStore {
   // Rematch
   rematchPending: boolean;
   rematchRequestedBy: 'you' | 'opponent' | null;
+  rematchTimedOut: boolean;
+
+  // Opponent identity
+  opponentUsername: string | null;
 
   // Actions
   setConnected: (connected: boolean) => void;
@@ -49,6 +53,8 @@ interface GameStore {
   setGameOver: (result: GameOverResult) => void;
   setOpponentReconnecting: (reconnecting: boolean, timeout?: number) => void;
   setRematchPending: (requestedBy: 'you' | 'opponent') => void;
+  setRematchTimedOut: () => void;
+  setOpponentUsername: (username: string | null) => void;
   reset: () => void;
   resetForRematch: () => void;
 }
@@ -71,6 +77,8 @@ const initialState = {
   reconnectCountdown: null,
   rematchPending: false,
   rematchRequestedBy: null,
+  rematchTimedOut: false,
+  opponentUsername: null as string | null,
 };
 
 export const useGameStore = create<GameStore>((set) => ({
@@ -117,6 +125,12 @@ export const useGameStore = create<GameStore>((set) => ({
   setRematchPending: (requestedBy) =>
     set({ rematchPending: true, rematchRequestedBy: requestedBy }),
 
+  setRematchTimedOut: () =>
+    set({ rematchTimedOut: true, rematchPending: false }),
+
+  setOpponentUsername: (username) =>
+    set({ opponentUsername: username }),
+
   reset: () => set(initialState),
 
   resetForRematch: () =>
@@ -132,5 +146,6 @@ export const useGameStore = create<GameStore>((set) => ({
       result: null,
       rematchPending: false,
       rematchRequestedBy: null,
+      rematchTimedOut: false,
     }),
 }));
