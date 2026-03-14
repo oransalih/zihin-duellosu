@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -15,8 +16,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.sadalsuud.zihinduellosu",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "GADApplicationIdentifier": "ca-app-pub-6498195844154887~4291325415"
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -42,7 +42,6 @@
       [
         "expo-build-properties",
         {
-          "ios": { "newArchEnabled": false },
           "android": { "newArchEnabled": true }
         }
       ]
