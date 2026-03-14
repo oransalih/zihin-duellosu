@@ -194,11 +194,13 @@ export function StartScreen() {
 
         </ScrollView>
       </KeyboardAvoidingView>
-      <BannerAd
-        unitId={bannerAdUnitId}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-      />
+      {Platform.OS === 'android' && (
+        <BannerAd
+          unitId={bannerAdUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        />
+      )}
     </SafeAreaView>
   );
 }
