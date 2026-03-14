@@ -138,13 +138,11 @@ export function ResultScreen() {
           </Pressable>
         </View>
       </View>
-      {Platform.OS === 'android' && (
-        <BannerAd
-          unitId={bannerAdUnitId}
-          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-        />
-      )}
+      <BannerAd
+        unitId={bannerAdUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+      />
     </SafeAreaView>
   );
 }

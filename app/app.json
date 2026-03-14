@@ -17,8 +17,7 @@
       "bundleIdentifier": "com.sadalsuud.zihinduellosu",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "GADApplicationIdentifier": "ca-app-pub-6498195844154887~4291325415",
-        "RCTNewArchEnabled": false
+        "GADApplicationIdentifier": "ca-app-pub-6498195844154887~4291325415"
       }
     },
     "android": {
