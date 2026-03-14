@@ -16,7 +16,8 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.sadalsuud.zihinduellosu",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "GADApplicationIdentifier": "ca-app-pub-6498195844154887~4291325415"
       }
     },
     "android": {
