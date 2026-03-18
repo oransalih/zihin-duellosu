@@ -69,6 +69,8 @@ export interface Translations {
   };
   profile: {
     title: string;
+    usernamePromptTitle: string;
+    usernamePromptSub: string;
     usernameLabel: string;
     usernamePlaceholder: string;
     save: string;
@@ -202,6 +204,8 @@ export const tr: Translations = {
   },
   profile: {
     title: 'Profil',
+    usernamePromptTitle: 'Nasıl çağrılmak istersin?',
+    usernamePromptSub: 'Rakiplerine bu isimle görüneceksin.',
     usernameLabel: 'Kullanıcı Adı',
     usernamePlaceholder: 'Adını gir...',
     save: 'KAYDET',

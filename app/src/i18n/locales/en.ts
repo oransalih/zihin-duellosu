@@ -66,6 +66,8 @@ export const en: Translations = {
   },
   profile: {
     title: 'Profile',
+    usernamePromptTitle: 'What should we call you?',
+    usernamePromptSub: 'Your opponents will see this name.',
     usernameLabel: 'Username',
     usernamePlaceholder: 'Enter your name...',
     save: 'SAVE',

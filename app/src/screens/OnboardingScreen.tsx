@@ -15,6 +15,7 @@ import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme'
 import { useTranslation } from '../i18n';
 import { useProfileStore } from '../store/profile-store';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import { UsernameModal } from '../components/UsernameModal';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 type Nav = NativeStackNavigationProp<RootStackParamList>;
@@ -30,7 +31,9 @@ export function OnboardingScreen() {
   const navigation = useNavigation<Nav>();
   const { t } = useTranslation();
   const setHasSeenOnboarding = useProfileStore((s) => s.setHasSeenOnboarding);
+  const username = useProfileStore((s) => s.profile.username);
   const [currentPage, setCurrentPage] = useState(0);
+  const [showUsernameModal, setShowUsernameModal] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const TOTAL_PAGES = 3;
 
@@ -45,7 +48,12 @@ export function OnboardingScreen() {
       scrollRef.current?.scrollTo({ x: SCREEN_WIDTH * next, animated: true });
       setCurrentPage(next);
     } else {
-      dismiss();
+      // Last page: collect username if not set, then dismiss
+      if (!username) {
+        setShowUsernameModal(true);
+      } else {
+        dismiss();
+      }
     }
   };
 
@@ -149,6 +157,11 @@ export function OnboardingScreen() {
           {currentPage === TOTAL_PAGES - 1 ? t.onboarding.start : t.onboarding.next}
         </Text>
       </Pressable>
+
+      <UsernameModal
+        visible={showUsernameModal}
+        onSaved={() => { setShowUsernameModal(false); dismiss(); }}
+      />
     </SafeAreaView>
   );
 }

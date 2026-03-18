@@ -41,7 +41,7 @@ function AppInner() {
     initialize().then(() => setReady(true));
   }, [initialize]);
 
-  // Once profile is loaded and nav is ready, check if we need to show onboarding
+  // Once profile is loaded and nav is ready, show onboarding on first run
   const handleNavReady = () => {
     if (!loaded) return;
     if (!profile.hasSeenOnboarding) {

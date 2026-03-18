@@ -11,15 +11,20 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
 import { useTranslation, Language } from '../i18n';
 import { useProfileStore } from '../store/profile-store';
 import { validateUsername } from '../services/profile-repository';
+import { RootStackParamList } from '../navigation/RootNavigator';
+
+type Nav = NativeStackNavigationProp<RootStackParamList>;
 
 export function ProfileSetupScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<Nav>();
   const { t, language, setLanguage } = useTranslation();
   const { profile, stats, setUsername } = useProfileStore();
+
 
   const [inputValue, setInputValue] = useState(profile.username);
   const [error, setError] = useState<string | null>(null);
