@@ -152,14 +152,6 @@ export function StartScreen() {
             <Text style={styles.subtitle}>{t.app.subtitle}</Text>
           </View>
 
-          {/* Banner Ad */}
-          <View style={styles.adContainer}>
-            <BannerAd
-              unitId={bannerAdUnitId}
-              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-            />
-          </View>
-
           {/* Main Card */}
           <View style={styles.card}>
             {/* Quick Match */}
@@ -268,6 +260,14 @@ export function StartScreen() {
                 <Text style={styles.btnOutlineText}>{t.start.joinRoom}</Text>
               </Pressable>
             )}
+          </View>
+
+          {/* Banner Ad */}
+          <View style={styles.adContainer}>
+            <BannerAd
+              unitId={bannerAdUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
