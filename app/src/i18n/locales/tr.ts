@@ -274,6 +274,10 @@ export const tr: Translations = {
         heading: 'Kazanma Koşulu',
         body: '4 Boğa → Kazandın!\nRakibinden az hamlede bulursan kazanırsın.\nAynı hamlede bulursanız berabere.',
       },
+      {
+        heading: 'Hızlı Eşleştir Hakkında',
+        body: 'Hızlı Eşleştir, önce gerçek bir rakip arar. Kısa süre içinde gerçek oyuncu bulunamazsa sistem otomatik olarak bir rakip sağlar.',
+      },
     ],
   },
   connection: {

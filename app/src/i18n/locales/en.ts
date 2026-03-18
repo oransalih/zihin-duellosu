@@ -138,6 +138,10 @@ export const en: Translations = {
         heading: 'Winning',
         body: '4 Bulls → You win!\nFewer guesses than opponent → Win.\nSame round, same guesses → Draw.',
       },
+      {
+        heading: 'About Quick Match',
+        body: 'Quick Match first searches for a real opponent. If no player is found in time, the system automatically provides one.',
+      },
     ],
   },
   connection: {
