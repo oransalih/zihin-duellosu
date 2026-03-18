@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator, Platform, ScrollView } from 'react-native';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -60,7 +60,11 @@ export function ResultScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <Image source={isWin ? trophyImg : isDraw ? drawImg : defeatImg} style={styles.resultIcon} />
 
         <Text style={styles.gameOverText}>{t.result.gameOver}</Text>
@@ -132,7 +136,7 @@ export function ResultScreen() {
             <Text style={styles.secondaryButtonText}>{t.result.home}</Text>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
 
       <BannerAd
         unitId={bannerAdUnitId}
@@ -145,7 +149,7 @@ export function ResultScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.lg, gap: Spacing.md },
+  content: { flexGrow: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.xl, gap: Spacing.md },
   resultIcon: { width: ms(96), height: ms(96), resizeMode: 'contain' },
   gameOverText: { fontSize: FontSize.xl, fontWeight: '700', color: Colors.textSecondary, letterSpacing: ms(2) },
   resultText: {

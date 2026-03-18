@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { validateSecret } from '@zihin-duellosu/shared';
 import { Colors, Spacing, FontSize, BorderRadius, ms } from '../constants/theme';
@@ -33,7 +33,12 @@ export function SetupScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* VS Banner */}
         <View style={styles.vsBanner}>
           <View style={styles.playerChip}>
@@ -89,14 +94,16 @@ export function SetupScreen() {
             </View>
           )}
         </View>
-      </View>
+      </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { flex: 1, justifyContent: 'center', paddingHorizontal: Spacing.lg, gap: Spacing.md },
+  flex: { flex: 1 },
+  content: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: Spacing.lg, paddingVertical: Spacing.xl, gap: Spacing.md },
   vsBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: Spacing.md },
   playerChip: {
     flex: 1, backgroundColor: Colors.primaryDark, borderRadius: BorderRadius.md,

@@ -34,7 +34,7 @@ export function StartScreen() {
   useGameEvents();
   useAppStateHandler();
 
-  const { t } = useTranslation();
+  const { t, language, setLanguage } = useTranslation();
   const navigation = useNavigation<Nav>();
 
   const connected = useGameStore((s) => s.connected);
@@ -257,6 +257,22 @@ export function StartScreen() {
       </KeyboardAvoidingView>
 
       <RulesModal visible={rulesVisible} onClose={() => setRulesVisible(false)} />
+
+      {/* Language toggle — bottom right */}
+      <View style={styles.langToggle} pointerEvents="box-none">
+        <Pressable
+          style={({ pressed }) => [styles.langBtn, language === 'tr' && styles.langBtnActive, pressed && styles.pressed]}
+          onPress={() => setLanguage('tr')}
+        >
+          <Text style={[styles.langBtnText, language === 'tr' && styles.langBtnTextActive]}>TR</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.langBtn, language === 'en' && styles.langBtnActive, pressed && styles.pressed]}
+          onPress={() => setLanguage('en')}
+        >
+          <Text style={[styles.langBtnText, language === 'en' && styles.langBtnTextActive]}>EN</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -361,4 +377,16 @@ const styles = StyleSheet.create({
   },
   joinBtnText: { fontSize: FontSize.xl, fontWeight: '900', color: Colors.textBright },
   pressed: { opacity: 0.8, transform: [{ scale: 0.98 }] },
+  langToggle: {
+    position: 'absolute', bottom: Spacing.md, right: Spacing.md,
+    flexDirection: 'row', gap: ms(4),
+  },
+  langBtn: {
+    paddingHorizontal: ms(10), paddingVertical: ms(6),
+    borderRadius: BorderRadius.sm, backgroundColor: Colors.surfaceLight,
+    borderWidth: 1, borderColor: Colors.surfaceBorder,
+  },
+  langBtnActive: { backgroundColor: Colors.primaryDark, borderColor: Colors.primaryLight },
+  langBtnText: { fontSize: FontSize.xs, fontWeight: '700', color: Colors.textMuted },
+  langBtnTextActive: { color: Colors.textBright },
 });

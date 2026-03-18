@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getLocales } from 'expo-localization';
 import { tr, Translations } from './locales/tr';
 import { en } from './locales/en';
 
@@ -8,6 +9,11 @@ export type Language = 'tr' | 'en';
 const LANGUAGE_KEY = '@language';
 
 const locales: Record<Language, Translations> = { tr, en };
+
+function detectDeviceLanguage(): Language {
+  const code = getLocales()[0]?.languageCode;
+  return code === 'tr' ? 'tr' : 'en';
+}
 
 interface LanguageContextValue {
   language: Language;
@@ -26,6 +32,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.getItem(LANGUAGE_KEY).then((stored) => {
       if (stored === 'tr' || stored === 'en') {
         setLang(stored);
+      } else {
+        // No stored preference — use device language
+        setLang(detectDeviceLanguage());
       }
     });
   }, []);
