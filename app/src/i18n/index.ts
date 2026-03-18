@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getLocales } from 'expo-localization';
 import { tr, Translations } from './locales/tr';
 import { en } from './locales/en';
 
@@ -11,8 +10,12 @@ const LANGUAGE_KEY = '@language';
 const locales: Record<Language, Translations> = { tr, en };
 
 function detectDeviceLanguage(): Language {
-  const code = getLocales()[0]?.languageCode;
-  return code === 'tr' ? 'tr' : 'en';
+  try {
+    const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+    return locale.startsWith('tr') ? 'tr' : 'en';
+  } catch {
+    return 'tr';
+  }
 }
 
 interface LanguageContextValue {
