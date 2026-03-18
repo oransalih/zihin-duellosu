@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -26,6 +27,13 @@ import { RulesModal } from '../components/RulesModal';
 import { RootStackParamList } from '../navigation/RootNavigator';
 
 const logoImg = require('../../assets/images/logo.png');
+
+const bannerAdUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : Platform.select({
+      ios: 'ca-app-pub-6498195844154887/8725394446',
+      android: 'ca-app-pub-6498195844154887/7366308215',
+    })!;
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -142,6 +150,14 @@ export function StartScreen() {
             <Text style={styles.title}>{t.app.title}</Text>
             <View style={styles.subtitleLine} />
             <Text style={styles.subtitle}>{t.app.subtitle}</Text>
+          </View>
+
+          {/* Banner Ad */}
+          <View style={styles.adContainer}>
+            <BannerAd
+              unitId={bannerAdUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            />
           </View>
 
           {/* Main Card */}
@@ -377,6 +393,7 @@ const styles = StyleSheet.create({
   },
   joinBtnText: { fontSize: FontSize.xl, fontWeight: '900', color: Colors.textBright },
   pressed: { opacity: 0.8, transform: [{ scale: 0.98 }] },
+  adContainer: { alignItems: 'center', marginBottom: Spacing.sm },
   langToggle: {
     position: 'absolute', bottom: Spacing.md, right: Spacing.md,
     flexDirection: 'row', gap: ms(4),
