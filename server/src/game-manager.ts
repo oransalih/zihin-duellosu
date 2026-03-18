@@ -9,6 +9,8 @@ export class GameManager {
   private socketToPlayer = new Map<string, string>();     // socketId → playerId
   private disconnectTimers = new Map<string, NodeJS.Timeout>(); // playerId → timer
 
+  private playerUsernames = new Map<string, string>();
+
   registerSocket(socketId: string, playerId: string): void {
     this.socketToPlayer.set(socketId, playerId);
   }
@@ -17,8 +19,19 @@ export class GameManager {
     return this.socketToPlayer.get(socketId);
   }
 
+  setUsername(playerId: string, username: string): void {
+    this.playerUsernames.set(playerId, username);
+    const room = this.getRoomForPlayer(playerId);
+    if (room) {
+      const idx = room.getPlayerIndex(playerId);
+      if (idx !== -1) room.data.players[idx]!.username = username;
+    }
+  }
+
   createRoom(playerId: string, socketId: string): GameRoom {
     const room = new GameRoom(playerId, socketId);
+    const username = this.playerUsernames.get(playerId);
+    if (username) room.data.players[0]!.username = username;
     this.rooms.set(room.id, room);
     this.playerToRoom.set(playerId, room.id);
     this.socketToPlayer.set(socketId, playerId);
@@ -36,7 +49,8 @@ export class GameManager {
     const room = this.rooms.get(roomId);
     if (!room) return false;
 
-    const joined = room.addPlayer(io, playerId, socketId);
+    const username = this.playerUsernames.get(playerId);
+    const joined = room.addPlayer(io, playerId, socketId, username);
     if (joined) {
       this.playerToRoom.set(playerId, roomId);
       this.socketToPlayer.set(socketId, playerId);

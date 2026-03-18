@@ -13,6 +13,7 @@ export const C2S = {
   GUESS_SUBMIT: 'c2s:guess_submit',
   REMATCH_REQUEST: 'c2s:rematch_request',
   RECONNECT: 'c2s:reconnect',
+  SET_USERNAME: 'c2s:set_username',
 } as const;
 
 export interface C2SPayloads {
@@ -24,6 +25,7 @@ export interface C2SPayloads {
   [C2S.GUESS_SUBMIT]: { guess: string };
   [C2S.REMATCH_REQUEST]: {};
   [C2S.RECONNECT]: { playerId: string };
+  [C2S.SET_USERNAME]: { username: string };
 }
 
 // ── Server to Client ──
@@ -48,7 +50,7 @@ export const S2C = {
 export interface S2CPayloads {
   [S2C.QUEUE_WAITING]: { position: number };
   [S2C.ROOM_CREATED]: { roomCode: string };
-  [S2C.MATCH_FOUND]: { roomId: string; opponentId: string };
+  [S2C.MATCH_FOUND]: { roomId: string; opponentId: string; opponentUsername?: string };
   [S2C.OPPONENT_READY]: {};
   [S2C.GAME_START]: { yourTurn: boolean; round: number };
   [S2C.GUESS_RESULT]: { guess: string; bulls: number; cows: number; round: number };

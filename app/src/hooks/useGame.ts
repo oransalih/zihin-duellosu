@@ -1,11 +1,12 @@
 import { useEffect, useCallback } from 'react';
-import { Alert } from 'react-native';
+import { Alert, AppState, AppStateStatus } from 'react-native';
 import { getSocket } from '../services/socket';
 import { S2C, C2S } from '@zihin-duellosu/shared';
 import { useGameStore } from '../store/game-store';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/RootNavigator';
+import { onGuessResult, onWin, onLose, onDraw } from '../services/feedback';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
@@ -25,9 +26,10 @@ export function useGameEvents() {
       useGameStore.getState().setMatchmakingStatus('waiting_for_opponent');
     });
 
-    socket.on(S2C.MATCH_FOUND, (data: { roomId: string }) => {
+    socket.on(S2C.MATCH_FOUND, (data: { roomId: string; opponentUsername?: string }) => {
       useGameStore.getState().setRoomId(data.roomId);
       useGameStore.getState().setMatchmakingStatus('matched');
+      useGameStore.getState().setOpponentUsername(data.opponentUsername ?? null);
       useGameStore.getState().resetForRematch();
       navigation.navigate('Setup', { roomId: data.roomId });
     });
@@ -43,6 +45,7 @@ export function useGameEvents() {
 
     socket.on(S2C.GUESS_RESULT, (data: { guess: string; bulls: number; cows: number; round: number }) => {
       useGameStore.getState().addMyGuess(data);
+      onGuessResult(data.bulls);
     });
 
     socket.on(S2C.OPPONENT_GUESSED, (data: { bulls: number; cows: number; round: number }) => {
@@ -55,6 +58,10 @@ export function useGameEvents() {
 
     socket.on(S2C.GAME_OVER, (data) => {
       useGameStore.getState().setGameOver(data);
+      // Trigger feedback based on result
+      if (data.winner === 'you') onWin();
+      else if (data.winner === 'opponent') onLose();
+      else onDraw();
       navigation.navigate('Result', { result: data });
     });
 
@@ -69,16 +76,16 @@ export function useGameEvents() {
     socket.on(S2C.OPPONENT_DISCONNECTED, () => {
       const currentResult = store().result;
       if (!currentResult) {
-        useGameStore.getState().setGameOver({
-          winner: 'you',
+        const gameOverResult = {
+          winner: 'you' as const,
           yourGuessCount: store().myGuesses.length,
           opponentGuessCount: store().opponentResults.length,
           opponentSecret: '????',
-          reason: 'Rakip oyundan ayrildi',
-        });
-        navigation.navigate('Result', {
-          result: store().result!,
-        });
+          reason: 'opponent_disconnected',
+        };
+        useGameStore.getState().setGameOver(gameOverResult);
+        onWin();
+        navigation.navigate('Result', { result: gameOverResult });
       }
     });
 
@@ -87,7 +94,6 @@ export function useGameEvents() {
     });
 
     socket.on(S2C.ERROR, (data: { code: string; message: string }) => {
-      console.warn('Server error:', data.code, data.message);
       useGameStore.getState().setMatchmakingStatus('idle');
       useGameStore.getState().setRoomCode(null);
       Alert.alert('Hata', data.message);
@@ -112,6 +118,31 @@ export function useGameEvents() {
   }, [navigation]);
 }
 
+/**
+ * Handles app background/foreground transitions.
+ * When app returns from background, the socket reconnection is already
+ * handled by socket.io's built-in reconnect logic. This hook just ensures
+ * the store's connected state reflects reality.
+ */
+export function useAppStateHandler() {
+  useEffect(() => {
+    const handleAppStateChange = (nextState: AppStateStatus) => {
+      if (nextState === 'active') {
+        const socket = getSocket();
+        // If socket is disconnected when returning from background, it will
+        // reconnect automatically. We update connected state accordingly.
+        if (!socket.connected) {
+          useGameStore.getState().setConnected(false);
+          socket.connect();
+        }
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    return () => subscription.remove();
+  }, []);
+}
+
 export function useGameActions() {
   const submitSecret = useCallback((secret: string) => {
     getSocket().emit(C2S.SECRET_SUBMIT, { secret });
@@ -123,6 +154,9 @@ export function useGameActions() {
   }, []);
 
   const requestRematch = useCallback(() => {
+    // Guard: don't emit if already pending to prevent double-send
+    const state = useGameStore.getState();
+    if (state.rematchPending && state.rematchRequestedBy === 'you') return;
     getSocket().emit(C2S.REMATCH_REQUEST, {});
   }, []);
 

@@ -44,7 +44,8 @@
         {
           "android": { "newArchEnabled": true }
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "owner": "oransalih",
     "extra": {

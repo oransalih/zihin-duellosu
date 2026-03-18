@@ -3,6 +3,7 @@ import { GuessResult, RoomState } from '@zihin-duellosu/shared';
 export interface Player {
   id: string;
   socketId: string;
+  username?: string;
   secret: string | null;
   guesses: GuessResult[];
   disconnectedAt: number | null;

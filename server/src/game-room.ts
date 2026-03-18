@@ -54,17 +54,25 @@ export class GameRoom {
     return (idx === 0 ? 1 : 0) as 0 | 1;
   }
 
-  addPlayer(io: Server, playerId: string, socketId: string): boolean {
+  addPlayer(io: Server, playerId: string, socketId: string, username?: string): boolean {
     if (this.data.state !== 'waiting_for_players' || this.data.players[1] !== null) {
       return false;
     }
-    this.data.players[1] = { id: playerId, socketId, secret: null, guesses: [], disconnectedAt: null };
+    this.data.players[1] = { id: playerId, socketId, username, secret: null, guesses: [], disconnectedAt: null };
     this.data.state = 'waiting_for_secrets';
 
     const p1 = this.data.players[0]!;
     const p2 = this.data.players[1]!;
-    io.to(p1.socketId).emit(S2C.MATCH_FOUND, { roomId: this.id, opponentId: p2.id });
-    io.to(p2.socketId).emit(S2C.MATCH_FOUND, { roomId: this.id, opponentId: p1.id });
+    io.to(p1.socketId).emit(S2C.MATCH_FOUND, {
+      roomId: this.id,
+      opponentId: p2.id,
+      opponentUsername: p2.username,
+    });
+    io.to(p2.socketId).emit(S2C.MATCH_FOUND, {
+      roomId: this.id,
+      opponentId: p1.id,
+      opponentUsername: p1.username,
+    });
     return true;
   }
 
@@ -263,12 +271,14 @@ export class GameRoom {
     this.data.players[1]!.secret = null;
     this.data.players[1]!.guesses = [];
 
-    // Notify both players to go to setup screen
-    io.to(this.data.players[0]!.socketId).emit(S2C.MATCH_FOUND, {
-      roomId: this.id, opponentId: this.data.players[1]!.id,
+    const p1 = this.data.players[0]!;
+    const p2 = this.data.players[1]!;
+    // Notify both players to go to setup screen (carry over usernames)
+    io.to(p1.socketId).emit(S2C.MATCH_FOUND, {
+      roomId: this.id, opponentId: p2.id, opponentUsername: p2.username,
     });
-    io.to(this.data.players[1]!.socketId).emit(S2C.MATCH_FOUND, {
-      roomId: this.id, opponentId: this.data.players[0]!.id,
+    io.to(p2.socketId).emit(S2C.MATCH_FOUND, {
+      roomId: this.id, opponentId: p1.id, opponentUsername: p1.username,
     });
   }
 

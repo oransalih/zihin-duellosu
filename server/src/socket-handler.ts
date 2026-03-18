@@ -51,6 +51,13 @@ export function createSocketHandler(io: Server, gameManager: GameManager, matchm
       gameManager.requestRematch(io, playerId);
     });
 
+    socket.on(C2S.SET_USERNAME, (data: { username: string }) => {
+      if (typeof data?.username === 'string') {
+        const sanitized = data.username.trim().slice(0, 16);
+        gameManager.setUsername(playerId, sanitized);
+      }
+    });
+
     socket.on('disconnect', () => {
       console.log(`Player disconnected: socket=${socket.id}, playerId=${playerId}`);
       matchmaker.removeFromQueue(playerId);
