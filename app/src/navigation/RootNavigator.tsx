@@ -4,6 +4,8 @@ import { StartScreen } from '../screens/StartScreen';
 import { SetupScreen } from '../screens/SetupScreen';
 import { GameScreen } from '../screens/GameScreen';
 import { ResultScreen } from '../screens/ResultScreen';
+import { OnboardingScreen } from '../screens/OnboardingScreen';
+import { ProfileSetupScreen } from '../screens/ProfileSetupScreen';
 import { Colors } from '../constants/theme';
 import { GameOverResult } from '@zihin-duellosu/shared';
 
@@ -12,6 +14,8 @@ export type RootStackParamList = {
   Setup: { roomId: string };
   Game: undefined;
   Result: { result: GameOverResult };
+  Onboarding: undefined;
+  ProfileSetup: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -41,6 +45,23 @@ export function RootNavigator() {
         name="Result"
         component={ResultScreen}
         options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingScreen}
+        options={{
+          presentation: 'modal',
+          animation: 'slide_from_bottom',
+          gestureEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="ProfileSetup"
+        component={ProfileSetupScreen}
+        options={{
+          presentation: 'modal',
+          animation: 'slide_from_bottom',
+        }}
       />
     </Stack.Navigator>
   );
